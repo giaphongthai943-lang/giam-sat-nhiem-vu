@@ -1,0 +1,1627 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 24 24%22%3E%3Crect width=%2224%22 height=%2224%22 rx=%225%22 fill=%22%231d5fc4%22/%3E%3Cpath d=%22M7 12l3.2 3.2L17 8.5%22 stroke=%22white%22 stroke-width=%222.4%22 fill=%22none%22 stroke-linecap=%22round%22/%3E%3C/svg%3E">
+</head>
+<body>
+<title>Giám sát nhiệm vụ Tiên Yên</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700&family=Lexend:wght@500;600;700&family=Montserrat:wght@700;800&display=swap">
+<style>
+/* Layout: bảng điều khiển hành chính — thanh tiêu đề + bộ lọc, 4 thẻ số liệu, 2 cột thống kê, danh sách nhiệm vụ toàn chiều rộng */
+:root{
+  --bg:#edf1f6; --surface:#ffffff; --surface-2:#f5f7fa; --line:#dfe5ee; --line-2:#c8d1de;
+  --ink:#14213a; --ink-2:#46536a; --muted:#77839a;
+  --accent:#1d5fc4; --accent-hover:#174ea3; --accent-ink:#ffffff; --accent-soft:#e2ebf8;
+  --doc:#5a4fcf; --doc-ink:#4a3fb8; --doc-soft:#ecebfb;
+  --good:#0ca30c; --good-ink:#0b6b2b; --good-soft:#e2f3e5;
+  --warn:#fab219; --warn-ink:#875700; --warn-soft:#fcf1d6;
+  --serious:#ec835a; --serious-ink:#a3441d; --serious-soft:#fce9e0;
+  --crit:#d03b3b; --crit-ink:#b42424; --crit-soft:#fae4e4;
+  --info:#2a78d6; --info-ink:#1d5fb0; --info-soft:#e1ecfa;
+  --shadow:0 1px 2px rgba(20,33,58,.06),0 1px 1px rgba(20,33,58,.03);
+  --scrim:rgba(10,18,32,.45);
+  --font:"Be Vietnam Pro",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --font-d:"Lexend","Be Vietnam Pro",system-ui,"Segoe UI",sans-serif;
+  --hero-a:rgba(29,95,196,.13); --hero-b:rgba(27,175,122,.10); --hero-dot:rgba(29,95,196,.22); --hero-shadow:rgba(29,95,196,.45); --chip-bg:rgba(255,255,255,.72);
+  --r:10px;
+  --brand-a:#0b3d91; --brand-b:#0e8f86; --flag-a:#d0202e; --flag-b:#f2b705;
+  --hl-y:#fff3c4; --hl-y-bar:#e8b000; --hl-o:#ffe1c7; --hl-o-bar:#f07a1a; --hl-r:#fcd6d6; --hl-r-bar:#d03b3b;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#0e131b; --surface:#161d28; --surface-2:#1c2431; --line:#273141; --line-2:#36435a;
+    --ink:#e8edf5; --ink-2:#b5c0d1; --muted:#8692a6;
+    --accent:#4d8fe8; --accent-hover:#6aa3ef; --accent-ink:#0b1220; --accent-soft:#1b2c47;
+    --doc:#9085e9; --doc-ink:#b3abf2; --doc-soft:#252445;
+    --good:#0ca30c; --good-ink:#4cc76a; --good-soft:#15301e;
+    --warn:#fab219; --warn-ink:#f2c35c; --warn-soft:#382c10;
+    --serious:#ec835a; --serious-ink:#f0a07f; --serious-soft:#3a2219;
+    --crit:#e05454; --crit-ink:#f07f7f; --crit-soft:#3a1b1d;
+    --info:#3987e5; --info-ink:#7fb1f0; --info-soft:#182a48;
+    --brand-a:#8ab8ff; --brand-b:#5fd6c4; --flag-a:#ff5a5f; --flag-b:#ffc94a;
+    --hl-y:#3a3210; --hl-y-bar:#e8b000; --hl-o:#432812; --hl-o-bar:#f08a3a; --hl-r:#46191d; --hl-r-bar:#e05454;
+    --shadow:0 1px 2px rgba(0,0,0,.3);
+    --scrim:rgba(0,0,0,.6);
+    --hero-a:rgba(77,143,232,.20); --hero-b:rgba(27,175,122,.12); --hero-dot:rgba(127,177,240,.18); --hero-shadow:rgba(0,0,0,.6); --chip-bg:rgba(22,29,40,.6);
+    color-scheme:dark;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#0e131b; --surface:#161d28; --surface-2:#1c2431; --line:#273141; --line-2:#36435a;
+  --ink:#e8edf5; --ink-2:#b5c0d1; --muted:#8692a6;
+  --accent:#4d8fe8; --accent-hover:#6aa3ef; --accent-ink:#0b1220; --accent-soft:#1b2c47;
+  --doc:#9085e9; --doc-ink:#b3abf2; --doc-soft:#252445;
+  --good:#0ca30c; --good-ink:#4cc76a; --good-soft:#15301e;
+  --warn:#fab219; --warn-ink:#f2c35c; --warn-soft:#382c10;
+  --serious:#ec835a; --serious-ink:#f0a07f; --serious-soft:#3a2219;
+  --crit:#e05454; --crit-ink:#f07f7f; --crit-soft:#3a1b1d;
+  --info:#3987e5; --info-ink:#7fb1f0; --info-soft:#182a48;
+  --brand-a:#8ab8ff; --brand-b:#5fd6c4; --flag-a:#ff5a5f; --flag-b:#ffc94a;
+  --hl-y:#3a3210; --hl-y-bar:#e8b000; --hl-o:#432812; --hl-o-bar:#f08a3a; --hl-r:#46191d; --hl-r-bar:#e05454;
+  --shadow:0 1px 2px rgba(0,0,0,.3);
+  --scrim:rgba(0,0,0,.6);
+  --hero-a:rgba(77,143,232,.20); --hero-b:rgba(27,175,122,.12); --hero-dot:rgba(127,177,240,.18); --hero-shadow:rgba(0,0,0,.6); --chip-bg:rgba(22,29,40,.6);
+  color-scheme:dark;
+}
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+body{background:var(--bg);color:var(--ink);font-family:var(--font);font-size:14px;line-height:1.45}
+button,input,select,textarea{font:inherit;color:inherit}
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.wrap{max-width:1480px;margin:0 auto;padding-block:20px 56px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));display:grid;gap:16px}
+
+/* Header: thẻ nền lưới gradient mềm, logo tròn, tiêu đề Lexend, chip trạng thái dạng viên thuốc */
+.hero{position:relative;overflow:hidden;display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:16px 24px;
+  padding:18px 22px;border-radius:18px;border:1px solid var(--line);
+  background:radial-gradient(110% 160% at 0% 0%,var(--hero-a) 0%,transparent 52%),radial-gradient(80% 140% at 100% 100%,var(--hero-b) 0%,transparent 58%),var(--surface);
+  box-shadow:0 1px 2px rgba(20,33,58,.05),0 14px 34px -22px var(--hero-shadow)}
+.hero::before{content:"";position:absolute;inset:0;pointer-events:none;opacity:.5;
+  background-image:radial-gradient(var(--hero-dot) 1px,transparent 1.2px);background-size:18px 18px;
+  -webkit-mask-image:linear-gradient(90deg,transparent 35%,#000 100%);mask-image:linear-gradient(90deg,transparent 35%,#000 100%)}
+.hero>*{position:relative}
+.brand{display:flex;align-items:center;gap:18px;min-width:0}
+.logo{width:76px;height:76px;flex:none;border-radius:50%;object-fit:contain;background:#fff;padding:2px;
+  box-shadow:0 0 0 1px var(--line),0 0 0 5px var(--surface),0 0 0 6px var(--line),0 10px 22px -10px var(--hero-shadow)}
+.ttl{min-width:0}
+.eyebrow{display:inline-block;font-family:"Montserrat",var(--font-d);font-size:clamp(19px,1.8vw,25px);font-weight:800;letter-spacing:.045em;line-height:1.25;text-transform:uppercase;color:var(--brand-a);
+  background:linear-gradient(90deg,var(--brand-a) 0%,var(--brand-b) 100%);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent}
+.flagbar{display:block;width:64px;height:3px;border-radius:3px;margin:6px 0 2px;background:linear-gradient(90deg,var(--flag-a),var(--flag-b))}
+h1{margin:4px 0 0;font-family:var(--font-d);font-size:clamp(22px,2.3vw,31px);font-weight:600;letter-spacing:-.022em;line-height:1.15;text-wrap:balance;color:var(--ink)}
+.meta{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-top:12px}
+.chip-m{display:inline-flex;align-items:center;gap:7px;height:28px;padding:0 12px;border-radius:999px;border:1px solid var(--line);
+  background:var(--chip-bg);-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px);font-size:12.5px;font-weight:500;color:var(--ink-2);white-space:nowrap;font-variant-numeric:tabular-nums}
+.chip-m svg{width:14px;height:14px;color:var(--muted);flex:none}
+.chip-m.role{font-weight:600;color:var(--accent);background:var(--accent-soft);border-color:transparent}
+.conn i{width:8px;height:8px;border-radius:50%;background:var(--muted);display:inline-block;flex:none}
+.conn.on i{background:var(--good);box-shadow:0 0 0 3px var(--good-soft)}
+.conn.warn i{background:var(--warn)}
+.conn.off i{background:var(--crit)}
+@media (prefers-reduced-motion:no-preference){.conn.on i{animation:live 2.2s ease-out infinite}@keyframes live{0%{box-shadow:0 0 0 0 rgba(12,163,12,.5)}70%{box-shadow:0 0 0 7px rgba(12,163,12,0)}100%{box-shadow:0 0 0 0 rgba(12,163,12,0)}}}
+@media (max-width:640px){.hero{padding:14px 16px;border-radius:14px}.brand{gap:12px}.logo{width:54px;height:54px;box-shadow:0 0 0 1px var(--line),0 0 0 3px var(--surface),0 0 0 4px var(--line)}.eyebrow{font-size:15px;letter-spacing:.02em}}
+.actions{display:flex;flex-wrap:wrap;gap:8px}
+.hero>.credit{position:absolute;right:22px;bottom:10px;font-size:12.5px;font-weight:500;color:var(--muted);opacity:.6;letter-spacing:.01em;pointer-events:none;white-space:nowrap}
+@media (max-width:900px){.hero>.credit{position:relative;right:auto;bottom:auto;flex:1 0 100%;text-align:right;margin-top:-8px}}
+
+.btn{display:inline-flex;align-items:center;gap:6px;border:1px solid var(--line-2);background:var(--surface);color:var(--ink);border-radius:8px;padding:7px 12px;font-size:13px;font-weight:600;cursor:pointer;white-space:nowrap;line-height:1.3}
+.btn:hover{border-color:var(--accent);color:var(--accent)}
+.btn.primary{background:var(--accent);border-color:var(--accent);color:var(--accent-ink)}
+.btn.primary:hover{background:var(--accent-hover);border-color:var(--accent-hover);color:var(--accent-ink)}
+.btn.ok{background:var(--good-ink);border-color:var(--good-ink);color:#fff}
+.btn.ok:hover{filter:brightness(1.08);color:#fff}
+.btn.danger{color:var(--crit-ink)}
+.btn.danger:hover{border-color:var(--crit);color:var(--crit-ink)}
+.btn.danger.fill{background:var(--crit);border-color:var(--crit);color:#fff}
+.btn.ghost{border-color:transparent;background:transparent}
+.btn.sm{padding:4px 9px;font-size:12px;border-radius:7px}
+.btn[disabled]{opacity:.55;cursor:not-allowed}
+.btn svg{width:15px;height:15px;flex:none}
+
+.filters{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.sel,.in{border:1px solid var(--line-2);background:var(--surface);color:var(--ink);border-radius:8px;padding:7px 10px;font-size:13px;min-width:0;max-width:100%}
+.sel{padding-right:28px}
+.filters .sel{flex:1 1 170px;max-width:260px}
+.range{display:inline-flex;align-items:center;gap:6px;flex-wrap:wrap}
+.range .in{width:auto;padding:6px 8px}
+.chipbar{display:flex;flex-wrap:wrap;gap:6px}
+.fchip{display:inline-flex;align-items:center;gap:6px;background:var(--accent-soft);color:var(--accent);border:none;border-radius:999px;padding:4px 10px;font-size:12px;font-weight:600;cursor:pointer}
+
+.banner{display:flex;flex-wrap:wrap;gap:8px 14px;align-items:center;justify-content:space-between;background:var(--warn-soft);border:1px solid var(--line);border-radius:var(--r);padding:10px 14px;color:var(--ink);font-size:13px}
+.banner.err{background:var(--crit-soft)}
+
+/* KPI */
+.kpis{display:grid;grid-template-columns:minmax(0,.9fr) minmax(0,1.7fr) minmax(0,1.05fr) minmax(0,1.9fr);gap:12px}
+@media (max-width:1180px){.kpis{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media (max-width:640px){.kpis{grid-template-columns:minmax(0,1fr)}}
+.kpi{border-radius:var(--r);padding:14px 16px 12px;background:var(--k-soft);border:1px solid var(--line);display:flex;flex-direction:column;gap:6px;min-width:0}
+.kpi.doc{--k-soft:var(--doc-soft);--k-ink:var(--doc-ink)}
+.kpi.all{--k-soft:var(--info-soft);--k-ink:var(--info-ink)}
+.kpi.done{--k-soft:var(--good-soft);--k-ink:var(--good-ink)}
+.kpi.open{--k-soft:var(--crit-soft);--k-ink:var(--crit-ink)}
+.kpi-h{display:flex;justify-content:space-between;align-items:flex-start;gap:8px}
+.kpi .lbl{font-size:12px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--ink-2)}
+.kpi .big{font-size:34px;font-weight:700;line-height:1.05;color:var(--k-ink)}
+.kpi .ico{width:26px;height:26px;color:var(--k-ink);opacity:.9}
+.kpi .note{font-size:12.5px;color:var(--ink-2)}
+.subs{display:grid;grid-template-columns:repeat(auto-fit,minmax(68px,1fr));gap:4px;margin-top:auto}
+.sub{background:none;border:none;border-radius:8px;padding:4px 2px;cursor:pointer;text-align:center;display:flex;flex-direction:column;align-items:center;gap:1px}
+.sub:hover{background:var(--surface)}
+.sub b{font-size:19px;font-weight:700;line-height:1.2}
+.sub span{font-size:11.5px;color:var(--ink-2);line-height:1.25}
+.t-good{color:var(--good-ink)} .t-crit{color:var(--crit-ink)} .t-warn{color:var(--warn-ink)} .t-ser{color:var(--serious-ink)} .t-info{color:var(--info-ink)} .t-doc{color:var(--doc-ink)} .t-muted{color:var(--muted)}
+
+/* Panels */
+.grid2{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:16px}
+@media (max-width:1060px){.grid2{grid-template-columns:minmax(0,1fr)}}
+.panel{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);box-shadow:var(--shadow);min-width:0;display:flex;flex-direction:column}
+.panel-h{display:flex;flex-wrap:wrap;align-items:center;gap:8px 12px;padding:13px 16px;border-bottom:1px solid var(--line)}
+.panel-h h2{margin:0;font-size:13.5px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;display:flex;align-items:center;gap:8px}
+.panel-h h2 svg{width:17px;height:17px;color:var(--accent)}
+.panel-h .sp{flex:1}
+.panel-f{display:flex;flex-wrap:wrap;gap:8px;align-items:center;justify-content:space-between;padding:10px 16px;border-top:1px solid var(--line);color:var(--muted);font-size:12.5px;margin-top:auto}
+.scroll{overflow-x:auto}
+table{border-collapse:collapse;width:100%}
+.stat{font-size:13px;font-variant-numeric:tabular-nums}
+.stat th{font-size:11.5px;font-weight:700;color:var(--ink-2);text-transform:uppercase;letter-spacing:.03em;padding:8px 8px;text-align:center;white-space:nowrap;border-bottom:1px solid var(--line)}
+.stat thead tr:first-child th[colspan]{border-bottom:1px solid var(--line-2)}
+.stat thead tr:nth-child(2) th{font-weight:600;color:var(--muted)}
+.stat td{padding:9px 8px;text-align:center;border-bottom:1px solid var(--line)}
+.stat td.l,.stat th.l{text-align:left}
+.stat td.l{min-width:180px}
+.stat tbody tr:last-child td{border-bottom:none}
+.stat tbody tr:hover td{background:var(--surface-2)}
+.link{background:none;border:none;padding:0;color:var(--accent);cursor:pointer;text-align:left;font-weight:500}
+.link:hover{text-decoration:underline}
+.rate{display:inline-block;min-width:46px;padding:2px 6px;border-radius:6px;font-size:12px;font-weight:700}
+.r-good{background:var(--good-soft);color:var(--good-ink)}
+.r-warn{background:var(--warn-soft);color:var(--warn-ink)}
+.r-crit{background:var(--crit-soft);color:var(--crit-ink)}
+.r-info{background:var(--info-soft);color:var(--info-ink)}
+.r-none{background:var(--surface-2);color:var(--muted)}
+.pager{display:flex;gap:4px;flex-wrap:wrap}
+.pf-r{display:flex;flex-wrap:wrap;align-items:center;gap:8px 16px;margin-left:auto}
+.perpage{display:inline-flex;align-items:center;gap:6px;white-space:nowrap}
+.perpage select{height:30px;padding:0 26px 0 10px;border:1px solid var(--line-2);border-radius:7px;background-color:var(--surface);color:var(--ink);font:inherit;font-weight:600;cursor:pointer}
+.pager button{min-width:30px;height:30px;border:1px solid var(--line-2);background:var(--surface);border-radius:7px;cursor:pointer;font-size:12.5px;font-weight:600;color:var(--ink-2)}
+.pager button.cur{background:var(--accent);border-color:var(--accent);color:var(--accent-ink)}
+.pager button[disabled]{opacity:.4;cursor:default}
+.empty{padding:28px 16px;text-align:center;color:var(--muted)}
+.empty b{display:block;color:var(--ink-2);margin-bottom:4px;font-size:14px}
+
+/* Chart */
+.legend{display:flex;flex-wrap:wrap;gap:6px 16px;padding:12px 16px 0;font-size:12.5px;color:var(--ink-2)}
+.legend span{display:inline-flex;align-items:center;gap:6px}
+.legend i{width:11px;height:11px;border-radius:3px;display:inline-block}
+#chart{position:relative;padding:4px 16px 8px}
+#chart svg{display:block;width:100%;height:auto;overflow:visible}
+#chart text{font-family:var(--font)}
+.tip{position:absolute;pointer-events:none;background:var(--ink);color:var(--surface);font-size:12px;padding:6px 9px;border-radius:7px;white-space:nowrap;z-index:5;box-shadow:0 4px 14px rgba(0,0,0,.18)}
+details.dt{padding:0 16px 12px}
+details.dt summary{cursor:pointer;color:var(--accent);font-size:12.5px;font-weight:600;padding:4px 0}
+
+/* Attention list */
+.tabs{display:flex;gap:4px;flex-wrap:wrap}
+.tab{border:1px solid transparent;background:none;border-radius:8px;padding:5px 10px;font-size:12.5px;font-weight:600;color:var(--ink-2);cursor:pointer;display:inline-flex;gap:6px;align-items:center}
+.tab:hover{background:var(--surface-2)}
+.tab.cur{background:var(--accent-soft);color:var(--accent)}
+.tab .n{font-variant-numeric:tabular-nums;background:var(--surface-2);color:var(--ink-2);border-radius:999px;padding:0 7px;font-size:11.5px}
+.tab.cur .n{background:var(--surface);color:var(--accent)}
+.att{list-style:none;margin:0;padding:0}
+.att li{display:flex;gap:12px;align-items:flex-start;padding:11px 16px;border-bottom:1px solid var(--line)}
+.att li:last-child{border-bottom:none}
+.att .bd{flex:1;min-width:0}
+.att .nm{font-weight:600;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.att .mt{font-size:12.5px;color:var(--muted);margin-top:2px}
+.att .rt{display:flex;flex-direction:column;align-items:flex-end;gap:6px;flex:none}
+
+/* Pills & chips */
+.pill{display:inline-flex;align-items:center;gap:6px;padding:3px 9px;border-radius:999px;font-size:12px;font-weight:600;white-space:nowrap}
+.pill::before{content:"";width:7px;height:7px;border-radius:50%;background:currentColor;flex:none}
+.p-good{background:var(--good-soft);color:var(--good-ink)}
+.p-ser{background:var(--serious-soft);color:var(--serious-ink)}
+.p-info{background:var(--info-soft);color:var(--info-ink)}
+.p-warn{background:var(--warn-soft);color:var(--warn-ink)}
+.p-crit{background:var(--crit-soft);color:var(--crit-ink)}
+.p-doc{background:var(--doc-soft);color:var(--doc-ink)}
+.chip{display:inline-block;font-size:11px;font-weight:600;padding:1px 7px;border-radius:5px;background:var(--surface-2);color:var(--ink-2);border:1px solid var(--line)}
+.chip.mau{background:var(--warn-soft);color:var(--warn-ink);border-color:transparent}
+.chip.ret{background:var(--crit-soft);color:var(--crit-ink);border-color:transparent}
+
+/* Task list */
+.toolbar{display:flex;flex-wrap:wrap;gap:8px 12px;align-items:center;padding:10px 16px;border-bottom:1px solid var(--line)}
+.toolbar .search{flex:1 1 240px;max-width:380px}
+.tasks{font-size:13px}
+.tasks th{font-size:11.5px;font-weight:700;text-transform:uppercase;letter-spacing:.03em;color:var(--ink-2);text-align:left;padding:9px 10px;border-bottom:1px solid var(--line);white-space:nowrap;background:var(--surface-2)}
+.tasks td{padding:10px;border-bottom:1px solid var(--line);vertical-align:top}
+.tasks tbody tr:hover td{background:var(--surface-2)}
+.tasks .num{color:var(--muted);font-variant-numeric:tabular-nums;width:34px}
+.c-vb{min-width:180px;max-width:260px}
+.vb-no{font-weight:700}
+.vb-date{font-size:12px;color:var(--muted)}
+.vb-ty{font-size:12px;color:var(--ink-2);display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;margin-top:2px}
+.c-nv{min-width:240px;max-width:420px}
+.c-nv .link{color:var(--ink);font-weight:600}
+.c-nv .link:hover{color:var(--accent)}
+.chips{display:flex;flex-wrap:wrap;gap:4px;margin-top:5px}
+.small{font-size:12px;color:var(--muted)}
+.c-han{white-space:nowrap;font-variant-numeric:tabular-nums}
+.c-act{white-space:nowrap;text-align:right}
+.c-act .btn{margin-left:4px}
+tr.is-done .c-nv .link{color:var(--ink-2)}
+.tasks tbody tr.hl-y td,.tasks tbody tr.hl-y:hover td{background:var(--hl-y)}
+.tasks tbody tr.hl-o td,.tasks tbody tr.hl-o:hover td{background:var(--hl-o)}
+.tasks tbody tr.hl-r td,.tasks tbody tr.hl-r:hover td{background:var(--hl-r)}
+.tasks tbody tr.hl-y td:first-child{box-shadow:inset 4px 0 0 var(--hl-y-bar)}
+.tasks tbody tr.hl-o td:first-child{box-shadow:inset 4px 0 0 var(--hl-o-bar)}
+.tasks tbody tr.hl-r td:first-child{box-shadow:inset 4px 0 0 var(--hl-r-bar)}
+.tasks tbody tr.hl-y:hover td,.tasks tbody tr.hl-o:hover td,.tasks tbody tr.hl-r:hover td{filter:brightness(.97)}
+.hl-legend{display:inline-flex;flex-wrap:wrap;gap:4px 12px;align-items:center;font-size:12px;color:var(--ink-2);margin-right:12px}
+.hl-legend i{display:inline-block;width:12px;height:12px;border-radius:3px;vertical-align:-2px;margin-right:5px}
+.hl-legend .y{background:var(--hl-y);box-shadow:inset 3px 0 0 var(--hl-y-bar)}
+.hl-legend .o{background:var(--hl-o);box-shadow:inset 3px 0 0 var(--hl-o-bar)}
+.hl-legend .r{background:var(--hl-r);box-shadow:inset 3px 0 0 var(--hl-r-bar)}
+
+/* Dialogs */
+dialog{border:none;border-radius:14px;padding:0;background:var(--surface);color:var(--ink);width:min(760px,calc(100vw - 24px));max-height:calc(100dvh - 24px);box-shadow:0 20px 50px rgba(0,0,0,.25)}
+dialog.narrow{width:min(520px,calc(100vw - 24px))}
+dialog.wide{width:min(1100px,calc(100vw - 24px))}
+dialog::backdrop{background:var(--scrim)}
+.dlg{display:flex;flex-direction:column;max-height:calc(100dvh - 24px)}
+.dlg-h{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:16px 20px;border-bottom:1px solid var(--line)}
+.dlg-h h3{margin:0;font-size:16px;font-weight:700}
+.dlg-b{padding:16px 20px;overflow:auto;display:grid;gap:14px}
+.dlg-f{display:flex;flex-wrap:wrap;gap:8px;justify-content:flex-end;padding:12px 20px;border-top:1px solid var(--line);background:var(--surface-2);border-radius:0 0 14px 14px}
+.dlg-f .sp{flex:1}
+.fgrid{display:grid;grid-template-columns:1fr 1fr;gap:12px 14px}
+.fgrid .full{grid-column:1/-1}
+@media (max-width:560px){.fgrid{grid-template-columns:1fr}}
+.fld{display:flex;flex-direction:column;gap:5px;min-width:0}
+.fld>span{font-size:12px;font-weight:600;color:var(--ink-2)}
+.fld>span em{color:var(--crit-ink);font-style:normal}
+.fld .in,.fld .sel{width:100%;font-size:14px;padding:8px 10px}
+textarea.in{resize:vertical;min-height:64px}
+.hint{font-size:12px;color:var(--muted)}
+.ferr{color:var(--crit-ink);font-size:12.5px;font-weight:600}
+.infobox{background:var(--surface-2);border:1px solid var(--line);border-radius:10px;padding:12px 14px;display:grid;gap:4px;font-size:13px}
+.infobox .k{color:var(--muted)}
+.kv{display:grid;grid-template-columns:150px 1fr;gap:6px 14px;font-size:13.5px}
+.kv dt{color:var(--muted)}
+.kv dd{margin:0;min-width:0;overflow-wrap:anywhere}
+@media (max-width:560px){.kv{grid-template-columns:1fr}.kv dd{margin-bottom:6px}}
+.hist{list-style:none;margin:0;padding:0;display:grid;gap:8px;font-size:13px}
+.hist li{display:flex;gap:10px}
+.hist time{color:var(--muted);white-space:nowrap;font-variant-numeric:tabular-nums}
+.drop{border:2px dashed var(--line-2);border-radius:12px;padding:22px;text-align:center;color:var(--ink-2);display:grid;gap:8px;justify-items:center}
+.drop.over{border-color:var(--accent);background:var(--accent-soft)}
+.prev{font-size:12.5px}
+.prev th{position:sticky;top:0;background:var(--surface-2);text-align:left;padding:6px 8px;font-size:11.5px;color:var(--ink-2);white-space:nowrap;border-bottom:1px solid var(--line)}
+.prev td{padding:6px 8px;border-bottom:1px solid var(--line);vertical-align:top}
+.prev-box{max-height:46vh;overflow:auto;border:1px solid var(--line);border-radius:8px}
+.sumline{display:flex;flex-wrap:wrap;gap:8px}
+.progress{height:6px;border-radius:99px;background:var(--surface-2);overflow:hidden}
+.progress i{display:block;height:100%;background:var(--accent);width:0}
+
+.toast{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(20px + env(safe-area-inset-bottom,0px));background:var(--ink);color:var(--surface);padding:10px 16px;border-radius:10px;font-size:13.5px;font-weight:500;z-index:100;box-shadow:0 8px 24px rgba(0,0,0,.25);max-width:calc(100vw - 32px)}
+.toast.err{background:var(--crit);color:#fff}
+@media (prefers-reduced-motion:no-preference){.toast{animation:tin .18s ease-out}@keyframes tin{from{opacity:0;transform:translate(-50%,8px)}to{opacity:1;transform:translate(-50%,0)}}}
+/* Trình chiếu */
+html.kiosk,html.kiosk body{height:100%;overflow:hidden}
+body.kiosk .wrap{max-width:none;height:100%;grid-template-rows:auto auto minmax(0,1fr);padding-block:14px}
+body.kiosk .wrap>:not(.top):not(.kpis):not(#kioskPanel){display:none!important}
+body.kiosk #topActions,body.kiosk .kpi.doc{display:none!important}
+body.kiosk .kpis{grid-template-columns:repeat(3,minmax(0,1fr))}
+body.kiosk .kpi .big{font-size:44px}
+body.kiosk .kpi .sub b{font-size:22px}
+body.kiosk .kpi .sub span{font-size:12.5px}
+@media (max-width:760px),(max-height:640px){body.kiosk .kpi .subs,body.kiosk .kpi .note,body.kiosk .kpi .ico{display:none}body.kiosk .kpi .big{font-size:30px}body.kiosk .kpi{padding:10px 12px;gap:2px}body.kiosk .wrap{gap:10px;padding-block:10px}}
+#kioskPanel{min-height:0}
+.kscroll{flex:1;min-height:0;overflow:hidden}
+.kscroll .tasks{font-size:15px}
+.kscroll .tasks thead th{position:sticky;top:0;z-index:1;font-size:12.5px}
+.kscroll .vb-ty{-webkit-line-clamp:3}
+.kscroll tr.kend td{text-align:center;color:var(--muted);font-size:12.5px;letter-spacing:.04em;background:var(--surface-2);padding:8px}
+.kscroll .empty{padding:60px 16px;font-size:16px}
+body.kiosk.idle,body.kiosk.idle *{cursor:none}
+.wrap{transition:opacity .45s ease}
+.wrap.fade{opacity:0}
+.kbar{position:fixed;right:calc(16px + env(safe-area-inset-right,0px));bottom:calc(16px + env(safe-area-inset-bottom,0px));z-index:50;display:flex;flex-wrap:wrap;gap:6px;align-items:center;background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:6px;box-shadow:0 8px 24px rgba(0,0,0,.18);transition:opacity .3s}
+.kbar.idle{opacity:0;pointer-events:none}
+.kbar .spd{font-size:12px;color:var(--ink-2);min-width:74px;text-align:center;font-variant-numeric:tabular-nums}
+.kprog{position:fixed;left:0;top:env(safe-area-inset-top,0px);height:3px;background:var(--accent);z-index:50;width:0}
+@media (max-width:640px){.kpi .big{font-size:30px}.panel-h{padding:12px}.toolbar{padding:10px 12px}}
+</style>
+
+<div class="wrap">
+  <header class="top hero">
+    <div class="brand">
+      <img class="logo" id="logoImg" src="data:image/png;base64,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" alt="Biểu trưng xã Tiên Yên" width="76" height="76">
+      <div class="ttl">
+        <div class="eyebrow" id="donvi">Ủy ban nhân dân xã Tiên Yên</div><span class="flagbar" aria-hidden="true"></span>
+        <h1>Giám sát nhiệm vụ được giao</h1>
+        <div class="meta">
+          <span class="chip-m conn" id="conn"><i></i><span>Đang kết nối…</span></span>
+          <span class="chip-m role" id="role" hidden></span>
+          <span class="chip-m"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4"/></svg><span id="todayLbl"></span></span>
+        </div>
+      </div>
+    </div>
+    <div class="actions" id="topActions"></div>
+    <div class="credit">Design by giaphongthai (Demo version 1)</div>
+  </header>
+
+  <div class="filters" role="group" aria-label="Bộ lọc">
+    <select class="sel" id="fLoai" aria-label="Loại nhiệm vụ"></select>
+    <select class="sel" id="fPhong" aria-label="Phòng ban"></select>
+    <select class="sel" id="fNguoi" aria-label="Người xử lý"></select>
+    <select class="sel" id="fLanhdao" aria-label="Lãnh đạo phụ trách"></select>
+    <select class="sel" id="fThang" aria-label="Kỳ báo cáo" title="Kỳ báo cáo (theo ngày văn bản giao)"></select>
+    <span class="range" id="fRange" hidden><span class="small">Từ</span><input class="in" type="date" id="fTu" aria-label="Từ ngày"><span class="small">đến</span><input class="in" type="date" id="fDen" aria-label="Đến ngày"></span>
+    <button class="btn ghost sm" id="fClear" hidden>Bỏ lọc</button>
+  </div>
+
+  <div id="banner"></div>
+  <section class="kpis" id="kpis" aria-label="Tổng hợp"></section>
+
+  <div class="grid2">
+    <section class="panel">
+      <div class="panel-h"><h2><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>Thống kê theo phòng ban</h2></div>
+      <div class="scroll" id="tDept"></div>
+      <div class="panel-f" id="fDept"></div>
+    </section>
+    <section class="panel">
+      <div class="panel-h"><h2><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="9" cy="8" r="3.5"/><path d="M2.5 20c.6-3.6 3.3-5.5 6.5-5.5s5.9 1.9 6.5 5.5"/><circle cx="17" cy="9" r="2.5"/><path d="M17 14c2.5 0 4.2 1.4 4.6 4"/></svg>Thống kê theo người xử lý</h2></div>
+      <div class="scroll" id="tStaff"></div>
+      <div class="panel-f" id="fStaff"></div>
+    </section>
+  </div>
+
+  <div class="grid2">
+    <section class="panel">
+      <div class="panel-h"><h2><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 20V4"/><path d="M4 20h16"/><rect x="7" y="6" width="9" height="3" rx="1"/><rect x="7" y="11" width="12" height="3" rx="1"/><rect x="7" y="16" width="5" height="2" rx="1"/></svg>Cơ cấu theo loại nhiệm vụ</h2></div>
+      <div class="legend" id="legend"></div>
+      <div id="chart"></div>
+      <details class="dt"><summary>Xem bảng số liệu</summary><div class="scroll" id="chartTable"></div></details>
+    </section>
+    <section class="panel">
+      <div class="panel-h"><h2><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 3 2.5 20h19L12 3Z"/><path d="M12 10v4"/><circle cx="12" cy="17" r=".6" fill="currentColor"/></svg>Cần xử lý ngay</h2><span class="sp"></span><div class="tabs" id="attTabs"></div></div>
+      <ul class="att" id="attList"></ul>
+      <div class="panel-f" id="attFoot"></div>
+    </section>
+  </div>
+
+  <section class="panel" id="listPanel">
+    <div class="panel-h"><h2><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 6h11M9 12h11M9 18h11"/><path d="m3.5 6 1 1 2-2M3.5 12l1 1 2-2M3.5 18l1 1 2-2"/></svg>Danh sách nhiệm vụ</h2><span class="sp"></span><span class="hl-legend"><span><i class="y"></i>Còn 1–3 ngày</span><span><i class="o"></i>Hạn hôm nay</span><span><i class="r"></i>Quá hạn</span></span><span class="small" id="listCount"></span></div>
+    <div class="toolbar">
+      <div class="tabs" id="stTabs"></div>
+      <input class="in search" id="q" type="search" placeholder="Tìm số văn bản, nhiệm vụ, người xử lý…" aria-label="Tìm kiếm">
+    </div>
+    <div class="chipbar" id="stChip" style="padding:0 16px"></div>
+    <div class="scroll" id="tList"></div>
+    <div class="panel-f" id="fList"></div>
+  </section>
+
+  <section class="panel" id="kioskPanel" hidden>
+    <div class="panel-h"><h2><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>Danh sách nhiệm vụ chưa hoàn thành</h2><span class="sp"></span><span class="hl-legend"><span><i class="y"></i>Còn 1–3 ngày</span><span><i class="o"></i>Hạn hôm nay</span><span><i class="r"></i>Quá hạn</span></span><span class="small" id="kScope"></span><span class="small" id="kCount"></span></div>
+    <div class="kscroll" id="kScroll"></div>
+  </section>
+</div>
+
+<div class="kbar" id="kbar" hidden role="toolbar" aria-label="Điều khiển trình chiếu">
+  <button class="btn sm" id="kPause">Tạm dừng</button>
+  <button class="btn sm" id="kSlow" aria-label="Chậm hơn">−</button><span class="spd" id="kSpd"></span><button class="btn sm" id="kFast" aria-label="Nhanh hơn">+</button>
+  <button class="btn sm danger" id="kExit">Thoát</button>
+</div>
+<div class="kprog" id="kprog" hidden></div>
+
+<datalist id="dlPhong"></datalist>
+<datalist id="dlNguoi"></datalist>
+<datalist id="dlLanhdao"></datalist>
+<datalist id="dlSo"></datalist>
+
+<!-- Thêm / sửa nhiệm vụ -->
+<dialog id="dlgTask"><div class="dlg">
+  <div class="dlg-h"><h3 id="taskTitle">Thêm nhiệm vụ</h3><button class="btn ghost sm" data-close>Đóng</button></div>
+  <div class="dlg-b">
+    <div class="fgrid">
+      <label class="fld"><span>Số, ký hiệu văn bản</span><input class="in" id="tf_so" list="dlSo" placeholder="VD: 125/KH-UBND" autocomplete="off"></label>
+      <label class="fld"><span>Ngày văn bản</span><input class="in" id="tf_ngayvb" type="date"></label>
+      <label class="fld full"><span>Trích yếu văn bản giao nhiệm vụ</span><textarea class="in" id="tf_tenvb" rows="2" placeholder="VD: Kế hoạch triển khai chuyển đổi số năm 2026"></textarea></label>
+      <label class="fld full"><span>Tên nhiệm vụ <em>*</em></span><textarea class="in" id="tf_nv" rows="2"></textarea></label>
+      <label class="fld"><span>Loại nhiệm vụ</span><select class="sel" id="tf_loai"></select></label>
+      <label class="fld"><span>Hạn xử lý</span><input class="in" id="tf_han" type="date"><span class="hint">Để trống nếu không có thời hạn.</span></label>
+      <label class="fld"><span>Phòng ban xử lý</span><input class="in" id="tf_phong" list="dlPhong" autocomplete="off"></label>
+      <label class="fld"><span>Người xử lý</span><input class="in" id="tf_nguoi" list="dlNguoi" autocomplete="off"></label>
+      <label class="fld full"><span>Lãnh đạo phụ trách</span><input class="in" id="tf_ld" list="dlLanhdao" autocomplete="off"></label>
+      <label class="fld" id="tf_htWrap" hidden><span>Ngày hoàn thành</span><input class="in" id="tf_ht" type="date"></label>
+      <label class="fld full"><span>Ghi chú</span><input class="in" id="tf_gc"></label>
+    </div>
+    <div class="ferr" id="tf_err" hidden></div>
+  </div>
+  <div class="dlg-f"><button class="btn" data-close>Hủy</button><span class="sp"></span><button class="btn" id="tf_more">Lưu và thêm tiếp</button><button class="btn primary" id="tf_save">Lưu nhiệm vụ</button></div>
+</div></dialog>
+
+<!-- Hoàn thành / duyệt -->
+<dialog id="dlgDone" class="narrow"><div class="dlg">
+  <div class="dlg-h"><h3 id="dnTitle">Hoàn thành nhiệm vụ</h3><button class="btn ghost sm" data-close>Đóng</button></div>
+  <div class="dlg-b">
+    <div class="infobox" id="dnInfo"></div>
+    <label class="fld"><span>Ngày hoàn thành (dùng để tính đúng hạn / quá hạn)</span><input class="in" id="dn_date" type="date"></label>
+    <label class="fld"><span id="dn_txtLbl">Kết quả thực hiện</span><textarea class="in" id="dn_txt" rows="3"></textarea></label>
+    <div class="ferr" id="dn_err" hidden></div>
+  </div>
+  <div class="dlg-f"><button class="btn" data-close>Hủy</button><span class="sp"></span><button class="btn danger" id="dn_return" hidden>Trả lại</button><button class="btn ok" id="dn_ok">Duyệt hoàn thành</button></div>
+</div></dialog>
+
+<!-- Báo hoàn thành (chuyên viên) -->
+<dialog id="dlgReport" class="narrow"><div class="dlg">
+  <div class="dlg-h"><h3>Báo hoàn thành</h3><button class="btn ghost sm" data-close>Đóng</button></div>
+  <div class="dlg-b">
+    <div class="infobox" id="rpInfo"></div>
+    <label class="fld"><span>Kết quả thực hiện <em>*</em></span><textarea class="in" id="rp_txt" rows="4" placeholder="VD: Đã ban hành Báo cáo số 45/BC-UBND ngày 18/11/2026"></textarea></label>
+    <div class="hint" id="rpHint"></div>
+    <div class="ferr" id="rp_err" hidden></div>
+  </div>
+  <div class="dlg-f"><button class="btn" data-close>Hủy</button><button class="btn primary" id="rp_ok">Gửi để duyệt</button></div>
+</div></dialog>
+
+<!-- Chi tiết -->
+<dialog id="dlgDetail"><div class="dlg">
+  <div class="dlg-h"><h3>Chi tiết nhiệm vụ</h3><button class="btn ghost sm" data-close>Đóng</button></div>
+  <div class="dlg-b" id="dtBody"></div>
+  <div class="dlg-f" id="dtFoot"></div>
+</div></dialog>
+
+<!-- Nhập Excel -->
+<dialog id="dlgImport" class="wide"><div class="dlg">
+  <div class="dlg-h"><h3>Nhập nhiệm vụ từ Excel</h3><button class="btn ghost sm" data-close>Đóng</button></div>
+  <div class="dlg-b">
+    <div class="drop" id="drop">
+      <div><b>Kéo thả file Excel vào đây</b> hoặc</div>
+      <label class="btn primary" for="imFile">Chọn file .xlsx</label>
+      <input type="file" id="imFile" accept=".xlsx,.xls,.csv" hidden>
+      <div class="hint">Dùng file mẫu để đúng cột. File khác vẫn nhập được nếu có dòng tiêu đề gồm các cột: Số ký hiệu, Trích yếu, Ngày văn bản, Tên nhiệm vụ, Phòng ban, Người xử lý, Lãnh đạo, Hạn xử lý.</div>
+      <button class="btn sm" id="imTpl" type="button">Tải file Excel mẫu</button>
+    </div>
+    <div id="imResult"></div>
+  </div>
+  <div class="dlg-f"><button class="btn" data-close>Hủy</button><span class="sp"></span><button class="btn primary" id="imGo" disabled>Nhập dữ liệu</button></div>
+</div></dialog>
+
+<!-- Danh mục -->
+<dialog id="dlgCfg"><div class="dlg">
+  <div class="dlg-h"><h3>Danh mục và cài đặt</h3><button class="btn ghost sm" data-close>Đóng</button></div>
+  <div class="dlg-b">
+    <label class="fld"><span>Tên đơn vị (hiện trên đầu trang)</span><input class="in" id="cf_dv"></label>
+    <div class="fgrid">
+      <label class="fld"><span>Phòng ban (mỗi dòng một tên)</span><textarea class="in" id="cf_pb" rows="8"></textarea></label>
+      <label class="fld"><span>Lãnh đạo phụ trách (mỗi dòng một tên)</span><textarea class="in" id="cf_ld" rows="8"></textarea></label>
+      <label class="fld full"><span>Người xử lý (mỗi dòng một tên)</span><textarea class="in" id="cf_cv" rows="5"></textarea></label>
+    </div>
+    <div class="hint">Danh mục dùng để gợi ý khi nhập. Tên đã có trong dữ liệu vẫn được giữ nguyên.</div>
+  </div>
+  <div class="dlg-f"><button class="btn" data-close>Hủy</button><button class="btn primary" id="cf_ok">Lưu danh mục</button></div>
+</div></dialog>
+
+<!-- Xác nhận -->
+<dialog id="dlgAsk" class="narrow"><div class="dlg">
+  <div class="dlg-h"><h3 id="askTitle">Xác nhận</h3></div>
+  <div class="dlg-b"><div id="askMsg"></div></div>
+  <div class="dlg-f"><button class="btn" id="askNo">Hủy</button><button class="btn danger fill" id="askYes">Đồng ý</button></div>
+</div></dialog>
+
+<script type="application/octet-stream" id="tplB64">
+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
+OllFIEtyJE8KnBhJSVxU6yysogVVtNRU0cIqAplMYp2sIpAlOZInBU6MpCQuinV2F2VV9Hj+6TpPUr7O/DFP1kkymZ6sk6dWkiU5kicFToykJC6qdZZV0eN5
+uc6KKsofI9aJKsok1okqIlmSI3lS4MRISuKiWmdZFT2el+usqKL8MWKdqKJMYp2oIpIlOZInBU6MpCQuqnWWVdHjebnOiirKHyPWiSrKJNaJKiJZkiN5UuDE
+SEriolpnWRU9npfrrKii/DFinaiiTGKdqCKSJTmSJwVOjKQkLj6u89ntu8PhzlzeXX7x+eVXd8f16vrucHN2c3hzWlr/Wervj74/3Lw9vDhcX9+evTp+db/b
+9vyJfjrdfJYacfqTt5+l9mHg9x/zxeevTxP/7vL66vS/r44fvvvc5uJc/7Wzu28/Hp6fn35wOD87fjzcXN4dT1/M25vDSW5+/e7yw/nZ5fX18ZtfXF9++O3p
+I05f4rvjNy9vbo43f3O4vb18e3jAwz38+uru+vTD//L2D//z27PfvvvD//7w9uzdH3//vz6eXf/x9//46dDpr7/747/+y8ezDw/HXv/xX//pdOz162fv3z/7
+9vQ/f3n29R/+5cS//+ezdnjWNM/ai3b82Wns3z98waa5+Ozht8Dpd9rx5v1X15fNF904tOPp91L+8efP5Bf5H/+LHv5UX/P11e1dwRf3q7tv77+427vjR/nl
+puPpS7g6+/Du6vRFvj/7+vQz/+5LfXH68v/7h7P3f/z9/7g7u348eHdzvP+CLz+8O7v9wz+9evf917aefkFX9cX92eXH4+1fmfvTp0/551ePP/7PP/n5T9rP
+Tv/y/8bXPfy7fdmPPwF7Wrz9kT+DX9z/DH7xk/7iT/xTGP69fwb+tAT/I38KL+5/Ci/+9D+F4f/Gz+A/zn/YhdMvSfz/7T/hw1DxNSs4/Rf/x9NP/G8ub95e
+nf5L//rw5uGf06bzs5urt+/yvz/9R9rDvxvOz7483t0d3+cfvTtcvj7c3P/o9I+Fb47Hu/yDZ4+f+6vD3Vcfz443V6d//nuY9/z84/Hm7uby6vRb+93J/+F4
++gvX5uPV6R8E26Vfxunh/7L59eHm7urVxl+4PeH9mu+b883V3a+Pv7l6fffuYe8PP3SHx5/2wz/3PPvmePPbh3+c+uL/AFBLAwQKAAAACAASI3Ndw2Q9A1MG
+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
+</script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+<script src="firebase-config.js"></script>
+<script src="firebase-adapter.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+<script>
+(function(){
+'use strict';
+/* ---------- Hằng số ---------- */
+const LOAI=[
+  {k:'trong_tam',s:'Trọng tâm',l:'Trọng tâm'},
+  {k:'co_thoi_han',s:'Có thời hạn',l:'Có thời hạn'},
+  {k:'dinh_ky',s:'Định kỳ',l:'Định kỳ'},
+  {k:'ct_nam',s:'CT năm',l:'Chương trình công tác năm'},
+  {k:'khac',s:'Khác',l:'Khác'}];
+const LOAI_BY=Object.fromEntries(LOAI.map(x=>[x.k,x]));
+const NONE='(Chưa phân công)';
+const DEFAULT_CFG={tenDonVi:'Ủy ban nhân dân xã Tiên Yên',phongBan:[],lanhDao:[],chuyenVien:[]};
+/* Lãnh đạo: nhiệm vụ ghi "Phạm Thế Mạnh" được tính vào mục danh mục "Phạm Thế Mạnh - Phó Chủ tịch…" (so theo họ tên) */
+const ldName=s=>norm(String(s||'').split(/\s+-\s+|\s*\(/)[0]);
+function ldCanon(v){if(!v)return v;const n=ldName(v);return (S.cfg.lanhDao||[]).find(x=>ldName(x)===n)||v;}
+const ST={
+  done_ontime:{l:'Hoàn thành đúng hạn',c:'p-good'},
+  done_late:{l:'Hoàn thành quá hạn',c:'p-ser'},
+  pending:{l:'Chờ duyệt',c:'p-doc'},
+  ontrack:{l:'Đang xử lý',c:'p-info'},
+  due_today:{l:'Hạn hôm nay',c:'p-warn'},
+  late13:{l:'Trễ 1–3 ngày',c:'p-crit'},
+  late3p:{l:'Trễ trên 3 ngày',c:'p-crit'}};
+const STATUS_TABS=[['all','Tất cả'],['pending','Chờ duyệt'],['open','Đang xử lý'],['late','Quá hạn'],['done','Hoàn thành']];
+const STATUS_EXTRA={ontrack:'Còn hạn',due_today:'Hạn hôm nay',late13:'Trễ 1–3 ngày',late3p:'Trễ trên 3 ngày',done_ontime:'Hoàn thành đúng hạn',done_late:'Hoàn thành quá hạn',carry:'Tồn mang sang'};
+
+/* ---------- Trạng thái trang ---------- */
+const S={tasks:new Map(),reports:new Map(),cfg:{...DEFAULT_CFG},loaded:false,confirmed:false,
+  db:null,user:null,dl:null,meId:null,isOwner:false,canWrite:null,role:'viewer',names:{},
+  f:{loai:'',phong:'',nguoi:'',lanhdao:'',ky:'',tu:'',den:''},st:'all',q:'',page:1,pDept:1,pStaff:1,att:'pending',
+  lastSync:null,today:''};
+const PER_OPTS=[10,20,50,100],PER_OPTS_G=[5,10,20,50,100];S.per=10;S.perDept=5;S.perStaff=5;
+try{const sv=JSON.parse(localStorage.getItem('gsnv_f')||'null'); if(sv&&typeof sv==='object'){Object.assign(S.f,sv.f||{});S.st=sv.st||'all';if(PER_OPTS.includes(sv.per))S.per=sv.per;
+  if(PER_OPTS_G.includes(sv.perDept))S.perDept=sv.perDept;if(PER_OPTS_G.includes(sv.perStaff))S.perStaff=sv.perStaff;}if(S.f.thang)S.f.ky='m:'+S.f.thang;delete S.f.thang;}catch(e){}
+function persist(){try{localStorage.setItem('gsnv_f',JSON.stringify({f:S.f,st:S.st,per:S.per,perDept:S.perDept,perStaff:S.perStaff}))}catch(e){}}
+
+/* ---------- Tiện ích ---------- */
+const $=(s,r=document)=>r.querySelector(s);
+const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const pad=n=>String(n).padStart(2,'0');
+const isoDate=d=>`${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())}`;
+const today=()=>isoDate(new Date());
+const nowIso=()=>new Date().toISOString();
+const fmtD=s=>s?`${s.slice(8,10)}/${s.slice(5,7)}/${s.slice(0,4)}`:'';
+const fmtDT=iso=>{if(!iso)return'';const d=new Date(iso);return `${pad(d.getHours())}:${pad(d.getMinutes())} ${pad(d.getDate())}/${pad(d.getMonth()+1)}/${d.getFullYear()}`;};
+const utc=s=>Date.UTC(+s.slice(0,4),+s.slice(5,7)-1,+s.slice(8,10));
+const dayDiff=(a,b)=>Math.round((utc(b)-utc(a))/86400000); // b - a
+const norm=s=>String(s??'').normalize('NFD').replace(/[̀-ͯ]/g,'').replace(/[đĐ]/g,'d').toLowerCase().replace(/\s+/g,' ').trim();
+const pct=(a,b)=>b?Math.round(a*100/b):0;
+const nameOf=(id,fb)=>(id&&S.names[id]&&S.names[id].name)||fb||'';
+const ICON={
+  plus:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M12 5v14M5 12h14"/></svg>',
+  up:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 16V4M7 9l5-5 5 5"/><path d="M4 16v3a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1v-3"/></svg>',
+  down:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 4v12M7 11l5 5 5-5"/><path d="M4 16v3a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1v-3"/></svg>',
+  screen:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="12" rx="1.5"/><path d="M8 20h8M12 16v4"/><path d="m10 8 4 2-4 2z" fill="currentColor"/></svg>',
+  cog:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 6h10M18 6h2M4 12h4M12 12h8M4 18h12M20 18h0"/><circle cx="16" cy="6" r="2"/><circle cx="10" cy="12" r="2"/><circle cx="18" cy="18" r="2"/></svg>',
+  doc:'<svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"/><path d="M14 3v5h5M9 13h6M9 17h6"/></svg>',
+  folder:'<svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg>',
+  check:'<svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="9"/><path d="m8 12 3 3 5-6"/></svg>',
+  alert:'<svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="9"/><path d="M12 7v6"/><circle cx="12" cy="16.5" r=".7" fill="currentColor"/></svg>'};
+
+let toastT=null;
+function toast(msg,kind){let el=$('#toast');if(!el){el=document.createElement('div');el.id='toast';el.setAttribute('role','status');document.body.appendChild(el);}
+  el.className='toast'+(kind==='err'?' err':'');el.textContent=msg;el.hidden=false;clearTimeout(toastT);toastT=setTimeout(()=>{el.hidden=true},kind==='err'?6000:3200);}
+function errMsg(e){const c=e&&e.code;
+  if(c==='invalid_argument'||c==='permission-denied')return 'Bạn chưa có quyền thay đổi dữ liệu này. Hãy đăng nhập bằng Gmail đã được người quản trị cấp quyền.';
+  if(c==='quota_exceeded')return 'Kho dữ liệu đã đầy. Hãy xóa bớt nhiệm vụ cũ hoặc dữ liệu mẫu rồi thử lại.';
+  if(c==='resource_exhausted'||c==='resource-exhausted')return 'Thao tác quá nhanh, hãy đợi vài giây rồi thử lại.';
+  if(c==='revoked'||c==='not_granted')return 'Quyền truy cập dữ liệu đã thay đổi. Hãy tải lại trang.';
+  return 'Không lưu được. Kiểm tra kết nối mạng rồi thử lại.';}
+async function retry(fn){try{return await fn();}catch(e){if(e&&e.code==='unavailable'){await new Promise(r=>setTimeout(r,500+Math.random()*700));return fn();}throw e;}}
+
+/* ---------- Tính trạng thái ---------- */
+function statusOf(t,td){
+  const rep=S.reports.get(t.id)||null;
+  if(t.trangThai==='hoan_thanh'){
+    const late=!!(t.hanXuLy&&t.ngayHoanThanh&&t.ngayHoanThanh>t.hanXuLy);
+    return {done:true,key:late?'done_late':'done_ontime',late,rep:null};
+  }
+  if(rep&&rep.state==='cho_duyet'){
+    const late=!!(t.hanXuLy&&rep.ngayBao&&rep.ngayBao>t.hanXuLy);
+    return {done:false,key:'pending',late,rep,days:t.hanXuLy?dayDiff(td,t.hanXuLy):null};
+  }
+  const returned=!!(rep&&rep.state==='tra_lai');
+  if(!t.hanXuLy) return {done:false,key:'ontrack',late:false,rep,returned,days:null};
+  const d=dayDiff(td,t.hanXuLy);
+  if(d>0) return {done:false,key:'ontrack',late:false,rep,returned,days:d};
+  if(d===0) return {done:false,key:'due_today',late:false,rep,returned,days:0};
+  return {done:false,key:d>=-3?'late13':'late3p',late:true,rep,returned,days:d};
+}
+const dateOf=t=>t.ngayVanBan||(t.createdAt||'').slice(0,10)||'';
+/* Kỳ báo cáo: '' | y:YYYY | q:YYYY-Q | m:YYYY-MM | r (từ ngày – đến ngày) */
+const QR=['I','II','III','IV'];
+const lastDay=(y,m)=>pad(new Date(y,m,0).getDate());
+function kyRange(){const v=S.f.ky;if(!v)return null;
+  if(v==='r'){if(!S.f.tu&&!S.f.den)return null;return [S.f.tu||'0000-01-01',S.f.den||'9999-12-31'];}
+  const k=v[0],x=v.slice(2),y=+x.slice(0,4);
+  if(k==='y')return [x+'-01-01',x+'-12-31'];
+  if(k==='m'){const m=+x.slice(5,7);return [x+'-01',`${x}-${lastDay(y,m)}`];}
+  if(k==='q'){const q=+x.slice(5),m1=(q-1)*3+1,m3=q*3;return [`${y}-${pad(m1)}-01`,`${y}-${pad(m3)}-${lastDay(y,m3)}`];}
+  return null;}
+function kyLabel(v){if(v===undefined)v=S.f.ky;if(!v)return 'Tất cả thời gian';
+  if(v==='r')return `Từ ${S.f.tu?fmtD(S.f.tu):'…'} đến ${S.f.den?fmtD(S.f.den):'…'}`;
+  const k=v[0],x=v.slice(2);
+  if(k==='y')return 'Năm '+x;if(k==='q')return `Quý ${QR[+x.slice(5)-1]}/${x.slice(0,4)}`;if(k==='m')return `Tháng ${x.slice(5)}/${x.slice(0,4)}`;return v;}
+
+function scoped(ignore){
+  const f=S.f,td=S.today,out=[],rg=kyRange();
+  for(const t of S.tasks.values()){
+    if(ignore!=='loai'&&f.loai&&(t.loai||'khac')!==f.loai)continue;
+    if(ignore!=='phong'&&f.phong&&(t.phongBan||NONE)!==f.phong)continue;
+    if(ignore!=='nguoi'&&f.nguoi&&(t.nguoiXuLy||NONE)!==f.nguoi)continue;
+    if(ignore!=='lanhdao'&&f.lanhdao&&(ldCanon(t.lanhDao)||NONE)!==f.lanhdao)continue;
+    let carry=false;
+    if(rg){const d=dateOf(t);
+      // Giao trước kỳ mà đầu kỳ chưa xong → tồn từ kỳ trước; giao sau kỳ → bỏ
+      if(!d||d<rg[0]){if(d&&(t.trangThai!=='hoan_thanh'||(t.ngayHoanThanh||'')>=rg[0]))carry=true;else continue;}
+      else if(d>rg[1])continue;}
+    out.push({t,s:statusOf(t,td),carry});
+  }
+  return out;
+}
+function agg(items){
+  const a={total:0,doneOn:0,doneLate:0,openIn:0,openLate:0,pending:0,ontrack:0,dueToday:0,late13:0,late3p:0,carry:0};
+  for(const {s,carry} of items){a.total++; if(carry)a.carry++;
+    if(s.done){s.late?a.doneLate++:a.doneOn++;}
+    else{s.late?a.openLate++:a.openIn++;
+      if(s.key==='pending')a.pending++;else if(s.key==='ontrack')a.ontrack++;else if(s.key==='due_today')a.dueToday++;else if(s.key==='late13')a.late13++;else a.late3p++;}}
+  a.done=a.doneOn+a.doneLate;a.open=a.total-a.done;return a;
+}
+function matchSt(it,st){const k=it.s.key;
+  switch(st){case 'all':return true;case 'pending':return k==='pending';case 'open':return !it.s.done&&k!=='pending';
+    case 'late':return !it.s.done&&it.s.late;case 'done':return it.s.done;case 'carry':return it.carry;default:return k===st;}}
+const RANK={late3p:0,late13:1,due_today:2,pending:3,ontrack:4,done_late:5,done_ontime:5};
+function sortItems(arr){return arr.sort((x,y)=>{const a=RANK[x.s.key],b=RANK[y.s.key];if(a!==b)return a-b;
+  if(x.s.done)return (y.t.ngayHoanThanh||'').localeCompare(x.t.ngayHoanThanh||'');
+  const ha=x.t.hanXuLy||'9999',hb=y.t.hanXuLy||'9999';if(ha!==hb)return ha.localeCompare(hb);
+  return (x.t.createdAt||'').localeCompare(y.t.createdAt||'');});}
+
+/* ---------- Kết xuất giao diện ---------- */
+let rafId=0;function scheduleRender(){if(rafId)return;rafId=requestAnimationFrame(()=>{rafId=0;renderAll();});}
+function renderAll(){
+  S.today=today();
+  $('#donvi').textContent=S.cfg.tenDonVi||DEFAULT_CFG.tenDonVi;
+  setTodayLbl();
+  renderActions();renderFilters();renderBanner();
+  const items=scoped();
+  renderKpis(items);renderGroup(items,'dept');renderGroup(items,'staff');renderChart(items);renderAtt(items);renderList(items);renderDatalists();renderKiosk(items);
+}
+function renderActions(){
+  const r=$('#role');
+  if(S.db){r.hidden=false;r.textContent=S.role==='owner'?'Quản trị · duyệt nhiệm vụ':S.role==='staff'?'Chuyên viên · báo hoàn thành':'Chỉ xem';}
+  const owner=S.role==='owner';const h=[];
+  if(owner){h.push(`<button class="btn primary" data-act="add">${ICON.plus}Thêm nhiệm vụ</button>`,`<button class="btn" data-act="import">${ICON.up}Nhập Excel</button>`);}
+  if(S.dl){if(owner)h.push(`<button class="btn" data-act="tpl">${ICON.down}File mẫu</button>`);h.push(`<button class="btn" data-act="export">${ICON.down}Xuất Excel</button>`);}
+  if(owner)h.push(`<button class="btn" data-act="cfg" title="Danh mục phòng ban, lãnh đạo">${ICON.cog}Danh mục</button>`);
+  h.push(`<button class="btn" data-act="kiosk" title="Toàn màn hình, tự cuộn để trình chiếu">${ICON.screen}Trình chiếu</button>`);
+  const html=h.join('');const el=$('#topActions');if(el._h!==html){el.innerHTML=html;el._h=html;}
+}
+// Danh mục trước (giữ thứ tự đã khai báo), sau đó các tên chỉ có trong dữ liệu
+function withCfg(cfg,vals){const seen=new Set(),out=[];for(const v of [...(cfg||[]),...uniq(vals)]){const k=norm(v);if(v&&!seen.has(k)){seen.add(k);out.push(v);}}return out;}
+function uniq(arr){return [...new Set(arr.filter(Boolean))].sort((a,b)=>a.localeCompare(b,'vi'));}
+function setOptions(sel,opts,val){
+  const sig=JSON.stringify(opts)+'|'+val;if(sel._sig===sig)return;sel._sig=sig;
+  sel.innerHTML=opts.map(([v,l])=>`<option value="${esc(v)}"${v===val?' selected':''}>${esc(l)}</option>`).join('');
+  sel.value=val;
+}
+function renderFilters(){
+  const all=[...S.tasks.values()];
+  const has=(k)=>all.some(t=>!t[k]);
+  setOptions($('#fLoai'),[['','Tất cả loại nhiệm vụ'],...LOAI.map(x=>[x.k,x.l])],S.f.loai);
+  const pb=withCfg(S.cfg.phongBan,all.map(t=>t.phongBan));if(has('phongBan'))pb.push(NONE);if(S.f.phong&&!pb.includes(S.f.phong))pb.push(S.f.phong);
+  setOptions($('#fPhong'),[['','Tất cả phòng ban'],...pb.map(x=>[x,x])],S.f.phong);
+  const ng=withCfg(S.cfg.chuyenVien,all.map(t=>t.nguoiXuLy));if(has('nguoiXuLy'))ng.push(NONE);if(S.f.nguoi&&!ng.includes(S.f.nguoi))ng.push(S.f.nguoi);
+  setOptions($('#fNguoi'),[['','Tất cả người xử lý'],...ng.map(x=>[x,x])],S.f.nguoi);
+  const ld=withCfg(S.cfg.lanhDao,all.map(t=>ldCanon(t.lanhDao)));if(has('lanhDao'))ld.push(NONE);if(S.f.lanhdao&&!ld.includes(S.f.lanhdao))ld.push(S.f.lanhdao);
+  setOptions($('#fLanhdao'),[['','Tất cả lãnh đạo phụ trách'],...ld.map(x=>[x,x])],S.f.lanhdao);
+  renderKySelect(all);
+  $('#fClear').hidden=!Object.values(S.f).some(Boolean);
+}
+function renderKySelect(all){
+  const cur=S.today,cy=cur.slice(0,4),cm=cur.slice(0,7),qOf=d=>`${d.slice(0,4)}-${Math.ceil(+d.slice(5,7)/3)}`;
+  const ds=all.map(dateOf).filter(Boolean),v=S.f.ky;
+  const ys=new Set([cy,String(+cy-1),...ds.map(d=>d.slice(0,4))]),qs=new Set([qOf(cur),...ds.map(qOf)]),ms=new Set([cm,...ds.map(d=>d.slice(0,7))]);
+  if(v[0]==='y')ys.add(v.slice(2));if(v[0]==='q')qs.add(v.slice(2));if(v[0]==='m')ms.add(v.slice(2));
+  const desc=s=>[...s].sort().reverse();
+  const opt=(val,l)=>`<option value="${val}"${val===v?' selected':''}>${esc(l)}</option>`;
+  const html=opt('','Tất cả thời gian')
+    +`<optgroup label="Theo năm">${desc(ys).map(y=>opt('y:'+y,'Năm '+y)).join('')}</optgroup>`
+    +`<optgroup label="Theo quý">${desc(qs).map(q=>opt('q:'+q,kyLabel('q:'+q))).join('')}</optgroup>`
+    +`<optgroup label="Theo tháng">${desc(ms).map(m=>opt('m:'+m,kyLabel('m:'+m))).join('')}</optgroup>`
+    +`<optgroup label="Tùy chọn">${opt('r','Từ ngày … đến ngày …')}</optgroup>`;
+  const sel=$('#fThang');if(sel._sig!==html){sel.innerHTML=html;sel._sig=html;}sel.value=v;
+  $('#fRange').hidden=v!=='r';
+  if(document.activeElement!==$('#fTu'))$('#fTu').value=S.f.tu||'';
+  if(document.activeElement!==$('#fDen'))$('#fDen').value=S.f.den||'';
+}
+function renderBanner(){
+  const el=$('#banner');let h='';
+  if(S.err)h=`<div class="banner err"><span>${esc(S.err)}</span></div>`;
+  else{const n=[...S.tasks.values()].filter(t=>t.mau).length;
+    if(n)h=`<div class="banner"><span><b>Đang có ${n} nhiệm vụ mẫu</b> (gắn nhãn MẪU) để xem thử cách trang hoạt động.${S.role==='owner'?' Khi bắt đầu nhập dữ liệu thật, hãy xóa chúng.':''}</span>${S.role==='owner'?'<button class="btn sm danger" data-act="clear-samples">Xóa dữ liệu mẫu</button>':''}</div>`;}
+  if(el._h!==h){el.innerHTML=h;el._h=h;}
+}
+function subBtn(v,label,num,cls){return `<button class="sub" data-act="flt" data-v="${v}" title="Lọc danh sách: ${esc(label)}"><b class="${cls||''}">${num}</b><span>${esc(label)}</span></button>`;}
+function renderKpis(items){
+  const a=agg(items);
+  const docs=new Map();for(const {t,s} of items){const k=norm(t.soKyHieu)||norm(t.tenVanBan)||('_'+t.id);if(!docs.has(k))docs.set(k,false);if(!s.done)docs.set(k,true);}
+  const docOpen=[...docs.values()].filter(Boolean).length;
+  const byL=Object.fromEntries(LOAI.map(l=>[l.k,0]));for(const {t} of items)byL[t.loai&&byL[t.loai]!==undefined?t.loai:'khac']++;
+  const rOn=pct(a.doneOn,a.done);
+  $('#kpis').innerHTML=`
+  <div class="kpi doc"><div class="kpi-h"><div class="lbl">Văn bản giao việc</div>${ICON.doc}</div><div class="big">${docs.size}</div>
+    <div class="note">văn bản có nhiệm vụ đang theo dõi</div><div class="subs">${subBtn('open','văn bản còn việc chưa xong',docOpen,'t-doc')}</div></div>
+  <div class="kpi all"><div class="kpi-h"><div class="lbl">Tổng số nhiệm vụ</div>${ICON.folder}</div><div class="big">${a.total}</div>
+    <div class="subs">${LOAI.map(l=>`<button class="sub" data-act="flt-loai" data-v="${l.k}" title="Lọc theo loại ${esc(l.l)}"><b class="t-info">${byL[l.k]}</b><span>${esc(l.s)}</span></button>`).join('')}</div></div>
+  <div class="kpi done"><div class="kpi-h"><div class="lbl">Đã hoàn thành</div>${ICON.check}</div><div class="big">${a.done}</div>
+    <div class="note">${a.done?`${rOn}% đúng hạn · ${pct(a.done,a.total)}% tổng số`:'Chưa có nhiệm vụ hoàn thành'}</div>
+    <div class="subs">${subBtn('done_ontime','Đúng hạn',a.doneOn,'t-good')}${subBtn('done_late','Quá hạn',a.doneLate,a.doneLate?'t-ser':'t-muted')}</div></div>
+  <div class="kpi open"><div class="kpi-h"><div class="lbl">Chưa hoàn thành</div>${ICON.alert}</div><div class="big">${a.open}</div>
+    <div class="note">${kyRange()?`Gồm ${a.carry} nhiệm vụ tồn từ kỳ trước · `:''}${a.openLate} quá hạn</div>
+    <div class="subs">${subBtn('pending','Chờ duyệt',a.pending,a.pending?'t-doc':'t-muted')}${subBtn('ontrack','Còn hạn',a.ontrack,'t-info')}${subBtn('due_today','Hạn hôm nay',a.dueToday,a.dueToday?'t-warn':'t-muted')}${subBtn('late13','Trễ 1–3 ngày',a.late13,a.late13?'t-crit':'t-muted')}${subBtn('late3p','Trễ >3 ngày',a.late3p,a.late3p?'t-crit':'t-muted')}</div></div>`;
+}
+function rateHT(a){if(!a.total)return '<span class="rate r-none">—</span>';const p=pct(a.done,a.total);return `<span class="rate ${p>=80?'r-good':p>=50?'r-warn':'r-crit'}">${p}%</span>`;}
+function rateCHT(a){if(!a.total)return '<span class="rate r-none">—</span>';const p=pct(a.open,a.total);return `<span class="rate ${!a.open?'r-none':a.openLate?'r-crit':'r-info'}">${p}%</span>`;}
+const nz=(v,cls)=>`<span class="${v?cls:'t-muted'}">${v}</span>`;
+function renderGroup(items,kind){
+  const key=kind==='dept'?'phongBan':'nguoiXuLy';const fk=kind==='dept'?'phong':'nguoi';
+  const g=new Map();for(const it of items){const k=it.t[key]||NONE;if(!g.has(k))g.set(k,[]);g.get(k).push(it);}
+  // Hiện đủ phòng ban trong danh mục, kể cả chưa có nhiệm vụ
+  if(kind==='dept'&&!S.f.phong&&!S.f.nguoi){const have=new Set([...g.keys()].map(norm));(S.cfg.phongBan||[]).forEach(p=>{if(p&&!have.has(norm(p))){g.set(p,[]);have.add(norm(p));}});}
+  const rows=[...g.entries()].map(([k,arr])=>({k,a:agg(arr)})).sort((x,y)=>(x.k===NONE)-(y.k===NONE)||y.a.total-x.a.total||x.k.localeCompare(y.k,'vi'));
+  const pk=kind==='dept'?'pDept':'pStaff',perK=kind==='dept'?'perDept':'perStaff';
+  const per=S[perK]||5,pages=Math.max(1,Math.ceil(rows.length/per));if(S[pk]>pages)S[pk]=pages;
+  const p=S[pk],slice=rows.slice((p-1)*per,p*per);
+  const label=kind==='dept'?'Phòng ban':'Người xử lý';
+  const tb=$(kind==='dept'?'#tDept':'#tStaff'),ft=$(kind==='dept'?'#fDept':'#fStaff');
+  if(!rows.length){tb.innerHTML=`<div class="empty">${S.loaded?'Chưa có dữ liệu trong phạm vi lọc.':'Đang tải dữ liệu…'}</div>`;ft.innerHTML='';return;}
+  tb.innerHTML=`<table class="stat"><thead><tr><th rowspan="2">STT</th><th rowspan="2" class="l">${label}</th><th rowspan="2">Tổng</th><th colspan="2">Hoàn thành</th><th rowspan="2">Tỷ lệ HT</th><th colspan="2">Chưa hoàn thành</th><th rowspan="2">Tỷ lệ CHT</th></tr>
+  <tr><th>Đúng hạn</th><th>Quá hạn</th><th>Trong hạn</th><th>Quá hạn</th></tr></thead><tbody>${slice.map((r,i)=>`<tr>
+  <td>${(p-1)*per+i+1}</td><td class="l"><button class="link" data-act="grp" data-k="${fk}" data-v="${esc(r.k)}" title="Lọc theo ${esc(r.k)}">${esc(r.k)}</button></td>
+  <td><b>${r.a.total}</b></td><td>${nz(r.a.doneOn,'t-good')}</td><td>${nz(r.a.doneLate,'t-ser')}</td><td>${rateHT(r.a)}</td>
+  <td>${nz(r.a.openIn,'t-info')}</td><td>${nz(r.a.openLate,'t-crit')}</td><td>${rateCHT(r.a)}</td></tr>`).join('')}</tbody></table>`;
+  ft.innerHTML=`<span>Đang hiển thị ${(p-1)*per+1}–${Math.min(p*per,rows.length)} / ${rows.length}</span><div class="pf-r">${perSelect(perK,pk,per,PER_OPTS_G)}${pager(pk,p,pages)}</div>`;
+}
+/* Ô chọn số dòng mỗi trang; đổi thì giữ dòng đầu đang xem trong trang mới */
+function perSelect(perK,pageK,per,opts){return `<label class="perpage">Hiển thị <select data-per="${perK}" data-pk="${pageK}" aria-label="Số dòng mỗi trang">${opts.map(n=>`<option value="${n}" ${n===per?'selected':''}>${n}</option>`).join('')}</select> dòng/trang</label>`;}
+document.addEventListener('change',e=>{const s=e.target;if(!s.matches||!s.matches('select[data-per]'))return;
+  const perK=s.dataset.per,pk=s.dataset.pk,n=+s.value,opts=perK==='per'?PER_OPTS:PER_OPTS_G;if(!opts.includes(n))return;
+  const first=(S[pk]-1)*S[perK];S[perK]=n;S[pk]=Math.floor(first/n)+1;persist();renderAll();});
+function pager(target,p,pages){
+  if(pages<=1)return '';
+  let nums=[];for(let i=1;i<=pages;i++){if(i===1||i===pages||Math.abs(i-p)<=1)nums.push(i);else if(nums[nums.length-1]!=='…')nums.push('…');}
+  return `<div class="pager"><button data-act="pg" data-t="${target}" data-p="${p-1}" ${p<=1?'disabled':''} aria-label="Trang trước">«</button>${nums.map(n=>n==='…'?'<button disabled>…</button>':`<button data-act="pg" data-t="${target}" data-p="${n}" class="${n===p?'cur':''}">${n}</button>`).join('')}<button data-act="pg" data-t="${target}" data-p="${p+1}" ${p>=pages?'disabled':''} aria-label="Trang sau">»</button></div>`;
+}
+
+/* ---------- Biểu đồ cột chồng ngang ---------- */
+const SEG=[['on','Hoàn thành đúng hạn','--good'],['late','Hoàn thành quá hạn','--serious'],['oin','Chưa HT – trong hạn','--info'],['olate','Chưa HT – quá hạn','--crit']];
+let lastChart=null,lastW=0;
+function renderChart(items){
+  lastChart=items;
+  $('#legend').innerHTML=SEG.map(s=>`<span><i style="background:var(${s[2]})"></i>${s[1]}</span>`).join('');
+  const rows=LOAI.map(l=>({l,on:0,late:0,oin:0,olate:0}));
+  for(const {t,s} of items){const r=rows.find(x=>x.l.k===(t.loai||'khac'))||rows[4];if(s.done)s.late?r.late++:r.on++;else s.late?r.olate++:r.oin++;}
+  rows.forEach(r=>r.tot=r.on+r.late+r.oin+r.olate);
+  const box=$('#chart');const W=Math.max(300,Math.round(box.clientWidth-32)||600);lastW=box.clientWidth;
+  const LW=W<460?84:112,RW=34,TOP=24,RH=40,BH=20;
+  const max=Math.max(1,...rows.map(r=>r.tot));
+  const raw=max/4,p10=Math.pow(10,Math.floor(Math.log10(raw))),m=raw/p10;
+  const step=Math.max(1,Math.round((m<=1?1:m<=2?2:m<=5?5:10)*p10));const nmax=Math.ceil(max/step)*step;
+  const pw=W-LW-RW,sx=v=>LW+v/nmax*pw,H=TOP+rows.length*RH+6;
+  let g='';
+  for(let v=0;v<=nmax;v+=step){const x=sx(v).toFixed(1);g+=`<line x1="${x}" x2="${x}" y1="${TOP-6}" y2="${H-4}" style="stroke:var(${v===0?'--line-2':'--line'})" stroke-width="1"/><text x="${x}" y="${TOP-11}" text-anchor="middle" font-size="11" style="fill:var(--muted)">${v}</text>`;}
+  rows.forEach((r,i)=>{
+    const y=TOP+i*RH+(RH-BH)/2;
+    g+=`<text x="${LW-10}" y="${y+BH/2+4}" text-anchor="end" font-size="12.5" font-weight="500" style="fill:var(--ink-2)">${esc(r.l.s)}</text>`;
+    const segs=SEG.map(s=>[s,r[s[0]]]).filter(x=>x[1]>0);
+    let x=LW;
+    segs.forEach(([s,v],j)=>{
+      const w=v/nmax*pw,last=j===segs.length-1,rw=Math.max(1,last?w:w-2);
+      const tip=`${r.l.l} · ${s[1]}: ${v} nhiệm vụ (${pct(v,r.tot)}%)`;
+      if(last){const rad=Math.min(4,rw/2,BH/2);g+=`<path d="M${x},${y}h${rw-rad}a${rad},${rad} 0 0 1 ${rad},${rad}v${BH-2*rad}a${rad},${rad} 0 0 1 -${rad},${rad}h-${rw-rad}z" style="fill:var(${s[2]})" data-tip="${esc(tip)}" data-act="flt-loai" data-v="${r.l.k}"/>`;}
+      else g+=`<rect x="${x}" y="${y}" width="${rw}" height="${BH}" style="fill:var(${s[2]})" data-tip="${esc(tip)}" data-act="flt-loai" data-v="${r.l.k}"/>`;
+      x+=w;
+    });
+    g+=`<text x="${sx(r.tot)+6}" y="${y+BH/2+4}" font-size="12.5" font-weight="700" style="fill:var(--ink)">${r.tot}</text>`;
+  });
+  box.innerHTML=`<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="Số nhiệm vụ theo loại và tình trạng">${g}</svg><div class="tip" hidden></div>`;
+  $('#chartTable').innerHTML=`<table class="stat"><thead><tr><th class="l">Loại</th>${SEG.map(s=>`<th>${s[1]}</th>`).join('')}<th>Tổng</th></tr></thead><tbody>${rows.map(r=>`<tr><td class="l">${esc(r.l.l)}</td><td>${r.on}</td><td>${r.late}</td><td>${r.oin}</td><td>${r.olate}</td><td><b>${r.tot}</b></td></tr>`).join('')}</tbody></table>`;
+}
+$('#chart').addEventListener('mousemove',e=>{
+  const tip=$('#chart .tip');if(!tip)return;const t=e.target.closest('[data-tip]');
+  if(!t){tip.hidden=true;return;}
+  tip.textContent=t.getAttribute('data-tip');tip.hidden=false;
+  const b=$('#chart').getBoundingClientRect();let x=e.clientX-b.left+12,y=e.clientY-b.top-34;
+  const tw=tip.offsetWidth;if(x+tw>b.width-4)x=Math.max(4,e.clientX-b.left-tw-12);
+  tip.style.left=x+'px';tip.style.top=Math.max(0,y)+'px';
+});
+$('#chart').addEventListener('mouseleave',()=>{const tip=$('#chart .tip');if(tip)tip.hidden=true;});
+if(window.ResizeObserver)new ResizeObserver(()=>{const w=$('#chart').clientWidth;if(lastChart&&Math.abs(w-lastW)>4)renderChart(lastChart);}).observe($('#chart'));
+
+/* ---------- Cần xử lý ngay ---------- */
+function renderAtt(items){
+  const lists={
+    pending:items.filter(i=>i.s.key==='pending').sort((a,b)=>(a.s.rep.ngayBao||'').localeCompare(b.s.rep.ngayBao||'')),
+    late:items.filter(i=>!i.s.done&&i.s.key!=='pending'&&i.s.late).sort((a,b)=>a.s.days-b.s.days),
+    soon:items.filter(i=>!i.s.done&&i.s.key!=='pending'&&!i.s.late&&i.s.days!=null&&i.s.days<=3).sort((a,b)=>a.s.days-b.s.days)};
+  const tabs=[['pending','Chờ duyệt'],['late','Quá hạn'],['soon','Đến hạn ≤ 3 ngày']];
+  $('#attTabs').innerHTML=tabs.map(([k,l])=>`<button class="tab ${S.att===k?'cur':''}" data-act="att" data-v="${k}">${l}<span class="n">${lists[k].length}</span></button>`).join('');
+  const L=lists[S.att];
+  if(!L.length){$('#attList').innerHTML=`<li class="empty" style="display:block"><b>${S.att==='pending'?'Không có báo cáo chờ duyệt':S.att==='late'?'Không có nhiệm vụ quá hạn':'Không có nhiệm vụ sắp đến hạn'}</b>${S.loaded?'Mọi việc trong phạm vi lọc đang ổn.':'Đang tải dữ liệu…'}</li>`;$('#attFoot').innerHTML='';return;}
+  const attN=6;
+  $('#attList').innerHTML=L.slice(0,attN).map(({t,s})=>{
+    let badge,btn='';
+    if(s.key==='pending'){badge=`<span class="pill p-doc">Báo ${fmtD(s.rep.ngayBao)}</span>`;if(S.role==='owner')btn=`<button class="btn sm ok" data-act="complete" data-id="${t.id}">Duyệt</button>`;}
+    else if(s.late)badge=`<span class="pill p-crit">Trễ ${-s.days} ngày</span>`;
+    else badge=`<span class="pill ${s.days===0?'p-warn':'p-info'}">${s.days===0?'Hạn hôm nay':'Còn '+s.days+' ngày'}</span>`;
+    const by=s.key==='pending'?` · Người báo: ${esc(nameOf(s.rep.by,s.rep.nguoiBaoTen)||'chuyên viên')}`:'';
+    return `<li><div class="bd"><button class="link nm" data-act="detail" data-id="${t.id}" style="color:var(--ink)">${esc(t.tenNhiemVu)}</button>
+      <div class="mt">${esc(t.phongBan||NONE)}${t.nguoiXuLy?' · '+esc(t.nguoiXuLy):''} · Hạn ${t.hanXuLy?fmtD(t.hanXuLy):'không'}${by}</div></div>
+      <div class="rt">${badge}${btn}</div></li>`;}).join('');
+  const st=S.att==='soon'?'open':S.att;
+  $('#attFoot').innerHTML=`<span>${L.length>attN?`Còn ${L.length-attN} nhiệm vụ khác`:`${L.length} nhiệm vụ`}</span><button class="btn sm" data-act="flt" data-v="${st}">Xem trong danh sách</button>`;
+}
+
+/* ---------- Danh sách ---------- */
+function listItems(items){
+  const q=norm(S.q);
+  return sortItems(items.filter(it=>matchSt(it,S.st)&&(!q||norm([it.t.soKyHieu,it.t.tenVanBan,it.t.tenNhiemVu,it.t.phongBan,it.t.nguoiXuLy,it.t.lanhDao,it.t.ghiChu].join(' ')).includes(q))));
+}
+function pill(s){return `<span class="pill ${ST[s.key].c}">${ST[s.key].l}</span>`;}
+function hanHint(t,s){
+  if(s.done)return `<div class="small">Xong ${fmtD(t.ngayHoanThanh)}</div>`;
+  if(s.key==='pending')return `<div class="small">Báo ${fmtD(s.rep.ngayBao)}</div>`;
+  if(s.days==null)return '';
+  if(s.days>0)return `<div class="small">Còn ${s.days} ngày</div>`;
+  if(s.days===0)return `<div class="small t-warn">Hôm nay</div>`;
+  return `<div class="small t-crit">Trễ ${-s.days} ngày</div>`;
+}
+function rowActions(t,s){
+  const b=[];
+  if(S.role==='owner'){
+    if(s.key==='pending')b.push(`<button class="btn sm ok" data-act="complete" data-id="${t.id}">Duyệt</button>`);
+    else if(!s.done)b.push(`<button class="btn sm" data-act="complete" data-id="${t.id}">Hoàn thành</button>`);
+    b.push(`<button class="btn sm" data-act="edit" data-id="${t.id}">Sửa</button>`);
+  }else if(S.role==='staff'){
+    if(s.key==='pending'){if(s.rep.by&&s.rep.by===S.meId)b.push(`<button class="btn sm" data-act="cancel-report" data-id="${t.id}">Rút báo cáo</button>`);}
+    else if(!s.done)b.push(`<button class="btn sm primary" data-act="report" data-id="${t.id}">Báo hoàn thành</button>`);
+  }
+  return b.join('');
+}
+function renderList(items){
+  const counts={};STATUS_TABS.forEach(([k])=>counts[k]=items.filter(i=>matchSt(i,k)).length);
+  $('#stTabs').innerHTML=STATUS_TABS.map(([k,l])=>`<button class="tab ${S.st===k?'cur':''}" data-act="st" data-v="${k}">${l}<span class="n">${counts[k]}</span></button>`).join('');
+  const chips=[];if(STATUS_EXTRA[S.st])chips.push(`<button class="fchip" data-act="st" data-v="all" title="Bỏ lọc">Tình trạng: ${STATUS_EXTRA[S.st]} ✕</button>`);
+  $('#stChip').innerHTML=chips.join('');$('#stChip').style.paddingTop=chips.length?'10px':'0';
+  const L=listItems(items);const per=S.per||10,pages=Math.max(1,Math.ceil(L.length/per));if(S.page>pages)S.page=pages;const p=S.page;
+  $('#listCount').textContent=`${L.length} nhiệm vụ`;
+  if(!L.length){
+    const none=!S.tasks.size;
+    $('#tList').innerHTML=`<div class="empty"><b>${!S.loaded?'Đang tải dữ liệu…':none?'Chưa có nhiệm vụ nào':'Không có nhiệm vụ phù hợp'}</b>${!S.loaded?'':none?(S.role==='owner'?'Bấm “Thêm nhiệm vụ” để nhập tay, hoặc “Nhập Excel” để nhập hàng loạt từ file mẫu.':'Nhiệm vụ sẽ hiện ở đây khi người quản trị giao việc.'):'Thử bỏ bớt bộ lọc hoặc từ khóa tìm kiếm.'}</div>`;
+    $('#fList').innerHTML='';return;}
+  const showAct=S.role!=='viewer';
+  $('#tList').innerHTML=`<table class="tasks">${taskHead(showAct)}<tbody>${L.slice((p-1)*per,p*per).map((it,i)=>taskRow(it,(p-1)*per+i+1,showAct)).join('')}</tbody></table>`;
+  $('#fList').innerHTML=`<span>Đang hiển thị ${(p-1)*per+1}–${Math.min(p*per,L.length)} / ${L.length}</span><div class="pf-r">${perSelect('per','page',per,PER_OPTS)}${pager('page',p,pages)}</div>`;
+}
+function taskHead(showAct){return `<thead><tr><th>#</th><th>Văn bản giao</th><th>Nhiệm vụ</th><th>Phòng ban / Người xử lý</th><th>Lãnh đạo PT</th><th>Hạn xử lý</th><th>Tình trạng</th>${showAct?'<th></th>':''}</tr></thead>`;}
+/* Tô nền theo hạn (nhiệm vụ chưa xong, chưa báo hoàn thành): còn 1–3 ngày vàng, hạn hôm nay cam, quá hạn đỏ */
+function rowHl(s){if(s.done||s.key==='pending'||s.days==null)return '';return s.days<0?'hl-r':s.days===0?'hl-o':s.days<=3?'hl-y':'';}
+function taskRow({t,s,carry},n,showAct){return `<tr class="${s.done?'is-done':''} ${rowHl(s)}">
+    <td class="num">${n}</td>
+    <td class="c-vb"><div class="vb-no">${esc(t.soKyHieu||'Không số')}</div>${t.ngayVanBan?`<div class="vb-date">ngày ${fmtD(t.ngayVanBan)}</div>`:''}${t.tenVanBan?`<div class="vb-ty" title="${esc(t.tenVanBan)}">${esc(t.tenVanBan)}</div>`:''}</td>
+    <td class="c-nv"><button class="link" data-act="detail" data-id="${t.id}">${esc(t.tenNhiemVu)}</button><div class="chips"><span class="chip">${esc((LOAI_BY[t.loai]||LOAI_BY.khac).s)}</span>${t.mau?'<span class="chip mau">MẪU</span>':''}${carry?'<span class="chip">Tồn kỳ trước</span>':''}${s.returned?'<span class="chip ret">Bị trả lại</span>':''}</div></td>
+    <td><div>${esc(t.phongBan||NONE)}</div><div class="small">${esc(t.nguoiXuLy||'')}</div></td>
+    <td class="small">${esc(t.lanhDao||'')}</td>
+    <td class="c-han">${t.hanXuLy?fmtD(t.hanXuLy):'<span class="t-muted">Không hạn</span>'}${hanHint(t,s)}</td>
+    <td>${pill(s)}</td>${showAct?`<td class="c-act">${rowActions(t,s)}</td>`:''}</tr>`;
+}
+/* Bảng trình chiếu: chỉ nhiệm vụ chưa hoàn thành, nhân đôi để trượt lặp liền mạch */
+function renderKiosk(items,force){
+  if(!K.on)return;
+  const open=sortItems(items.filter(i=>!i.s.done));
+  const late=open.filter(i=>i.s.late).length;
+  $('#kCount').textContent=`${open.length} nhiệm vụ · ${late} quá hạn`;
+  const f=S.f,sc=[f.loai&&(LOAI_BY[f.loai]||{}).l,f.phong,f.nguoi,f.lanhdao,kyRange()&&kyLabel()].filter(Boolean);
+  $('#kScope').textContent=sc.length?`Phạm vi: ${sc.join(' · ')}  ·  `:'';
+  const box=$('#kScroll');
+  let body;
+  if(!open.length)body=`<div class="empty"><b>Không có nhiệm vụ chưa hoàn thành</b>${S.loaded?'Toàn bộ nhiệm vụ trong phạm vi đã hoàn thành.':'Đang tải dữ liệu…'}</div>`;
+  else{const rows=open.map((it,i)=>taskRow(it,i+1,false)).join('')+`<tr class="kend"><td colspan="7">Hết danh sách · ${open.length} nhiệm vụ chưa hoàn thành</td></tr>`;
+    body={rows};}
+  const sig=typeof body==='string'?body:body.rows;
+  if(!force&&box._sig===sig)return;
+  box._sig=sig;
+  const keep=K.loopH?K.pos/K.loopH:0;
+  if(typeof body==='string'){box.innerHTML=body;K.loopH=0;K.pos=0;return;}
+  box.innerHTML=`<table class="tasks">${taskHead(false)}<tbody>${body.rows}</tbody></table>`;
+  // Luôn nhân bản để trượt vòng liên tục, kể cả khi danh sách ngắn hơn màn hình
+  const table=box.querySelector('table');
+  table.insertAdjacentHTML('beforeend',`<tbody aria-hidden="true">${body.rows}</tbody>`);
+  const tb=box.querySelectorAll('tbody');K.loopH=tb[1].offsetTop-tb[0].offsetTop;
+  if(K.loopH>0){const extra=Math.ceil(box.clientHeight/K.loopH);
+    if(extra>1)table.insertAdjacentHTML('beforeend',`<tbody aria-hidden="true">${body.rows}</tbody>`.repeat(extra-1));}
+  K.pos=K.loopH?Math.max(0,Math.min(K.loopH-1,keep*K.loopH)):0;box.scrollTop=K.pos;
+}
+function renderDatalists(){
+  const all=[...S.tasks.values()];
+  const fill=(id,vals)=>{const h=uniq(vals).map(v=>`<option value="${esc(v)}">`).join('');const el=$(id);if(el._h!==h){el.innerHTML=h;el._h=h;}};
+  fill('#dlPhong',[...(S.cfg.phongBan||[]),...all.map(t=>t.phongBan)]);
+  fill('#dlNguoi',[...(S.cfg.chuyenVien||[]),...all.map(t=>t.nguoiXuLy)]);
+  fill('#dlLanhdao',[...(S.cfg.lanhDao||[]),...all.map(t=>ldCanon(t.lanhDao))]);
+  fill('#dlSo',all.map(t=>t.soKyHieu));
+}
+function setConn(state,text){const c=$('#conn');c.className='chip-m conn '+state;c.querySelector('span').textContent=text;}
+function connText(){if(!S.lastSync)return;const d=S.lastSync;setConn('on',`Trực tuyến · cập nhật lúc ${pad(d.getHours())}:${pad(d.getMinutes())}:${pad(d.getSeconds())}`);}
+
+/* ---------- Sự kiện chung ---------- */
+['fLoai','fPhong','fNguoi','fLanhdao','fThang'].forEach(id=>$('#'+id).addEventListener('change',e=>{
+  const k={fLoai:'loai',fPhong:'phong',fNguoi:'nguoi',fLanhdao:'lanhdao',fThang:'ky'}[id];S.f[k]=e.target.value;
+  if(id==='fThang'){if(S.f.ky==='r'){if(!S.f.tu&&!S.f.den){S.f.tu=S.today.slice(0,7)+'-01';S.f.den=S.today;}setTimeout(()=>$('#fTu').focus(),0);}else{S.f.tu='';S.f.den='';}}
+  S.page=1;S.pDept=1;S.pStaff=1;persist();renderAll();}));
+['fTu','fDen'].forEach(id=>$('#'+id).addEventListener('change',()=>{let a=$('#fTu').value,b=$('#fDen').value;if(a&&b&&a>b)[a,b]=[b,a];
+  S.f.tu=a;S.f.den=b;S.page=1;S.pDept=1;S.pStaff=1;persist();renderAll();}));
+$('#fClear').addEventListener('click',()=>{S.f={loai:'',phong:'',nguoi:'',lanhdao:'',ky:'',tu:'',den:''};S.page=1;persist();renderAll();});
+let qT=null;$('#q').addEventListener('input',e=>{clearTimeout(qT);qT=setTimeout(()=>{S.q=e.target.value;S.page=1;renderAll();},150);});
+document.querySelectorAll('dialog').forEach(d=>{d.addEventListener('click',e=>{if(e.target.closest('[data-close]'))d.close();});});
+
+function goList(){const el=$('#listPanel');if(el.scrollIntoView)el.scrollIntoView({behavior:matchMedia('(prefers-reduced-motion: reduce)').matches?'auto':'smooth',block:'start'});}
+document.addEventListener('click',async e=>{
+  const b=e.target.closest('[data-act]');if(!b||b.disabled)return;
+  const act=b.dataset.act,id=b.dataset.id,v=b.dataset.v;
+  switch(act){
+    case 'flt':S.st=v;S.page=1;persist();renderAll();goList();break;
+    case 'flt-loai':S.f.loai=S.f.loai===v?'':v;S.page=1;persist();renderAll();break;
+    case 'grp':S.f[b.dataset.k]=S.f[b.dataset.k]===v?'':v;S.page=1;persist();renderAll();break;
+    case 'st':S.st=v;S.page=1;persist();renderAll();break;
+    case 'att':S.att=v;renderAll();break;
+    case 'pg':{const t=b.dataset.t;S[t]=+b.dataset.p;renderAll();break;}
+    case 'add':openTask(null);break;
+    case 'edit':openTask(id);break;
+    case 'detail':openDetail(id);break;
+    case 'complete':openDone(id);break;
+    case 'report':openReport(id);break;
+    case 'cancel-report':cancelReport(id);break;
+    case 'reopen':reopen(id);break;
+    case 'delete':delTask(id);break;
+    case 'import':openImport();break;
+    case 'tpl':downloadTemplate();break;
+    case 'export':exportExcel();break;
+    case 'cfg':openCfg();break;
+    case 'clear-samples':clearSamples();break;
+    case 'kiosk':kioskStart();break;
+  }
+});
+
+/* ---------- Hộp xác nhận ---------- */
+function ask(title,msg,yes){return new Promise(res=>{const d=$('#dlgAsk');$('#askTitle').textContent=title;$('#askMsg').textContent=msg;$('#askYes').textContent=yes||'Đồng ý';
+  const done=v=>{d.close();$('#askYes').onclick=null;$('#askNo').onclick=null;d.oncancel=null;res(v);};
+  $('#askYes').onclick=()=>done(true);$('#askNo').onclick=()=>done(false);d.oncancel=()=>done(false);d.showModal();});}
+function hist(t,entries){return [...(t.lichSu||[]).slice(-40),...entries.map(x=>({t:x.t||nowIso(),by:x.by===undefined?S.meId:x.by,a:x.a}))];}
+function busy(btn,on){if(!btn)return;btn.disabled=on;}
+
+/* ---------- Thêm / sửa ---------- */
+let editId=null;
+function openTask(id){
+  editId=id;const t=id?S.tasks.get(id):null;
+  $('#taskTitle').textContent=t?'Sửa nhiệm vụ':'Thêm nhiệm vụ';
+  $('#tf_loai').innerHTML=LOAI.map(l=>`<option value="${l.k}">${esc(l.l)}</option>`).join('');
+  $('#tf_so').value=t?.soKyHieu||'';$('#tf_ngayvb').value=t?.ngayVanBan||'';$('#tf_tenvb').value=t?.tenVanBan||'';
+  $('#tf_nv').value=t?.tenNhiemVu||'';$('#tf_loai').value=t?.loai||'co_thoi_han';$('#tf_han').value=t?.hanXuLy||'';
+  $('#tf_phong').value=t?.phongBan||(S.f.phong&&S.f.phong!==NONE?S.f.phong:'');$('#tf_nguoi').value=t?.nguoiXuLy||'';$('#tf_ld').value=t?.lanhDao||'';$('#tf_gc').value=t?.ghiChu||'';
+  const done=t&&t.trangThai==='hoan_thanh';$('#tf_htWrap').hidden=!done;$('#tf_ht').value=done?(t.ngayHoanThanh||''):'';
+  $('#tf_more').hidden=!!t;$('#tf_err').hidden=true;
+  $('#dlgTask').showModal();setTimeout(()=>$(t?'#tf_nv':'#tf_so').focus(),30);
+}
+$('#tf_so').addEventListener('change',()=>{const so=norm($('#tf_so').value);if(!so)return;
+  const m=[...S.tasks.values()].find(t=>norm(t.soKyHieu)===so);if(!m)return;
+  if(!$('#tf_tenvb').value&&m.tenVanBan)$('#tf_tenvb').value=m.tenVanBan;
+  if(!$('#tf_ngayvb').value&&m.ngayVanBan)$('#tf_ngayvb').value=m.ngayVanBan;
+  if(!$('#tf_ld').value&&m.lanhDao)$('#tf_ld').value=m.lanhDao;});
+function readTask(){return{soKyHieu:$('#tf_so').value.trim(),ngayVanBan:$('#tf_ngayvb').value||'',tenVanBan:$('#tf_tenvb').value.trim(),
+  tenNhiemVu:$('#tf_nv').value.trim(),loai:$('#tf_loai').value,hanXuLy:$('#tf_han').value||'',phongBan:$('#tf_phong').value.trim(),
+  nguoiXuLy:$('#tf_nguoi').value.trim(),lanhDao:$('#tf_ld').value.trim(),ghiChu:$('#tf_gc').value.trim()};}
+async function saveTask(more){
+  const v=readTask(),err=$('#tf_err');
+  if(!v.tenNhiemVu){err.textContent='Hãy nhập tên nhiệm vụ.';err.hidden=false;$('#tf_nv').focus();return;}
+  if(v.hanXuLy&&v.ngayVanBan&&v.hanXuLy<v.ngayVanBan){err.textContent='Hạn xử lý đang sớm hơn ngày văn bản. Kiểm tra lại ngày.';err.hidden=false;return;}
+  err.hidden=true;const btn=more?$('#tf_more'):$('#tf_save');busy(btn,true);
+  try{
+    if(editId){const t=S.tasks.get(editId);const upd={...v,updatedAt:nowIso(),lichSu:hist(t,[{a:'Sửa thông tin nhiệm vụ'}])};
+      if(t.trangThai==='hoan_thanh'&&$('#tf_ht').value)upd.ngayHoanThanh=$('#tf_ht').value;
+      await retry(()=>S.db.doc('tasks/'+editId).update(upd));toast('Đã lưu thay đổi');$('#dlgTask').close();}
+    else{const ref=S.db.collection('tasks').doc();
+      await retry(()=>ref.set({...v,trangThai:'dang_xu_ly',ngayHoanThanh:null,ngayDuyet:null,ketQua:'',nguon:'thu_cong',createdAt:nowIso(),createdBy:S.meId,lichSu:[{t:nowIso(),by:S.meId,a:'Giao nhiệm vụ'}]}));
+      toast('Đã thêm nhiệm vụ');
+      if(more){$('#tf_nv').value='';$('#tf_nguoi').value='';$('#tf_gc').value='';$('#tf_nv').focus();}else $('#dlgTask').close();}
+  }catch(e){err.textContent=errMsg(e);err.hidden=false;}
+  finally{busy(btn,false);}
+}
+$('#tf_save').addEventListener('click',()=>saveTask(false));
+$('#tf_more').addEventListener('click',()=>saveTask(true));
+
+/* ---------- Hoàn thành / duyệt (quản trị) ---------- */
+let doneId=null;
+function taskInfo(t){return `<div><b>${esc(t.tenNhiemVu)}</b></div><div><span class="k">Văn bản:</span> ${esc(t.soKyHieu||'Không số')}${t.ngayVanBan?' ngày '+fmtD(t.ngayVanBan):''}</div><div><span class="k">Xử lý:</span> ${esc(t.phongBan||NONE)}${t.nguoiXuLy?' · '+esc(t.nguoiXuLy):''}</div><div><span class="k">Hạn:</span> ${t.hanXuLy?fmtD(t.hanXuLy):'Không thời hạn'}</div>`;}
+function openDone(id){
+  doneId=id;const t=S.tasks.get(id);if(!t)return;const s=statusOf(t,S.today);const rep=s.key==='pending'?s.rep:null;
+  $('#dnTitle').textContent=rep?'Duyệt báo cáo hoàn thành':'Xác nhận hoàn thành';
+  $('#dnInfo').innerHTML=taskInfo(t)+(rep?`<hr style="border:none;border-top:1px solid var(--line);margin:6px 0"><div><span class="k">Người báo:</span> ${esc(nameOf(rep.by,rep.nguoiBaoTen)||'Chuyên viên')} · ngày ${fmtD(rep.ngayBao)}</div><div><span class="k">Kết quả báo cáo:</span> ${esc(rep.ketQua||'')}</div>`:'');
+  $('#dn_date').value=rep?rep.ngayBao:S.today;$('#dn_date').max=S.today;
+  $('#dn_txtLbl').textContent=rep?'Kết quả / ý kiến (bắt buộc khi trả lại)':'Kết quả thực hiện';
+  $('#dn_txt').value=rep?(rep.ketQua||''):'';$('#dn_return').hidden=!rep;$('#dn_ok').textContent=rep?'Duyệt hoàn thành':'Hoàn thành và duyệt';
+  $('#dn_err').hidden=true;$('#dlgDone').showModal();
+}
+$('#dn_ok').addEventListener('click',async()=>{
+  const t=S.tasks.get(doneId);if(!t)return;const s=statusOf(t,S.today);const rep=s.key==='pending'?s.rep:null;
+  const date=$('#dn_date').value,txt=$('#dn_txt').value.trim(),err=$('#dn_err');
+  if(!date){err.textContent='Chọn ngày hoàn thành.';err.hidden=false;return;}
+  const btn=$('#dn_ok');busy(btn,true);
+  try{
+    const entries=rep?[{a:`Báo hoàn thành (ngày ${fmtD(rep.ngayBao)})`,by:rep.by||null,t:rep.t},{a:`Duyệt hoàn thành, tính ngày ${fmtD(date)}`}]:[{a:`Hoàn thành và duyệt, ngày ${fmtD(date)}`}];
+    await retry(()=>S.db.doc('tasks/'+doneId).update({trangThai:'hoan_thanh',ngayHoanThanh:date,ketQua:txt,ngayDuyet:S.today,nguoiBao:rep?(rep.by||null):S.meId,nguoiBaoTen:rep?(rep.nguoiBaoTen||null):null,lichSu:hist(t,entries)}));
+    if(S.reports.has(doneId))await retry(()=>S.db.doc('reports/'+doneId).delete());
+    toast(date>(t.hanXuLy||'9999')?'Đã duyệt · hoàn thành quá hạn':'Đã duyệt · hoàn thành đúng hạn');$('#dlgDone').close();
+  }catch(e){err.textContent=errMsg(e);err.hidden=false;}finally{busy(btn,false);}
+});
+$('#dn_return').addEventListener('click',async()=>{
+  const t=S.tasks.get(doneId);const rep=S.reports.get(doneId);if(!t||!rep)return;
+  const txt=$('#dn_txt').value.trim(),err=$('#dn_err');
+  if(!txt||txt===(rep.ketQua||'').trim()){err.textContent='Ghi lý do trả lại vào ô ý kiến.';err.hidden=false;$('#dn_txt').focus();return;}
+  const btn=$('#dn_return');busy(btn,true);
+  try{
+    await retry(()=>S.db.doc('reports/'+doneId).update({state:'tra_lai',lyDoTraLai:txt,ngayTraLai:S.today}));
+    await retry(()=>S.db.doc('tasks/'+doneId).update({lichSu:hist(t,[{a:`Báo hoàn thành (ngày ${fmtD(rep.ngayBao)})`,by:rep.by||null,t:rep.t},{a:'Trả lại: '+txt}])}));
+    toast('Đã trả lại báo cáo');$('#dlgDone').close();
+  }catch(e){err.textContent=errMsg(e);err.hidden=false;}finally{busy(btn,false);}
+});
+async function reopen(id){const t=S.tasks.get(id);if(!t)return;
+  if(!await ask('Mở lại nhiệm vụ?','Nhiệm vụ sẽ quay về trạng thái đang xử lý và tính lại hạn từ hôm nay.','Mở lại'))return;
+  try{await retry(()=>S.db.doc('tasks/'+id).update({trangThai:'dang_xu_ly',ngayHoanThanh:null,ngayDuyet:null,lichSu:hist(t,[{a:'Mở lại nhiệm vụ'}])}));$('#dlgDetail').close();toast('Đã mở lại nhiệm vụ');}catch(e){toast(errMsg(e),'err');}}
+async function delTask(id){const t=S.tasks.get(id);if(!t)return;
+  if(!await ask('Xóa nhiệm vụ?',`“${t.tenNhiemVu}” sẽ bị xóa khỏi hệ thống và không khôi phục được.`,'Xóa nhiệm vụ'))return;
+  try{await retry(()=>S.db.doc('tasks/'+id).delete());if(S.reports.has(id))await retry(()=>S.db.doc('reports/'+id).delete());$('#dlgDetail').close();toast('Đã xóa nhiệm vụ');}catch(e){toast(errMsg(e),'err');}}
+
+/* ---------- Báo hoàn thành (chuyên viên) ---------- */
+let repId=null;
+function openReport(id){repId=id;const t=S.tasks.get(id);if(!t)return;const rep=S.reports.get(id);
+  $('#rpInfo').innerHTML=taskInfo(t)+(rep&&rep.state==='tra_lai'?`<div class="t-crit"><b>Bị trả lại ngày ${fmtD(rep.ngayTraLai)}:</b> ${esc(rep.lyDoTraLai||'')}</div>`:'');
+  $('#rp_txt').value=rep&&rep.state==='tra_lai'?(rep.ketQua||''):'';
+  $('#rpHint').textContent=`Ngày báo hoàn thành sẽ ghi là hôm nay (${fmtD(S.today)}) và dùng để tính đúng hạn khi được duyệt.`;
+  $('#rp_err').hidden=true;$('#dlgReport').showModal();setTimeout(()=>$('#rp_txt').focus(),30);}
+$('#rp_ok').addEventListener('click',async()=>{
+  const txt=$('#rp_txt').value.trim(),err=$('#rp_err');
+  if(!txt){err.textContent='Hãy ghi kết quả thực hiện.';err.hidden=false;return;}
+  const btn=$('#rp_ok');busy(btn,true);
+  try{await retry(()=>S.db.doc('reports/'+repId).set({state:'cho_duyet',ngayBao:S.today,ketQua:txt,by:S.meId,t:nowIso()}));toast('Đã gửi báo cáo, đang chờ duyệt');$('#dlgReport').close();}
+  catch(e){err.textContent=errMsg(e);err.hidden=false;if(e&&(e.code==='invalid_argument'||e.code==='permission-denied')){S.role='viewer';scheduleRender();}}
+  finally{busy(btn,false);}
+});
+async function cancelReport(id){if(!await ask('Rút báo cáo?','Nhiệm vụ sẽ quay về trạng thái đang xử lý.','Rút báo cáo'))return;
+  try{await retry(()=>S.db.doc('reports/'+id).delete());toast('Đã rút báo cáo');}catch(e){toast(errMsg(e),'err');}}
+
+/* ---------- Chi tiết ---------- */
+function openDetail(id){const t=S.tasks.get(id);if(!t)return;const s=statusOf(t,S.today);
+  const row=(k,v)=>v?`<dt>${k}</dt><dd>${v}</dd>`:'';
+  const rep=s.rep;
+  $('#dtBody').innerHTML=`<div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center">${pill(s)}${t.mau?'<span class="chip mau">MẪU</span>':''}${s.returned?'<span class="chip ret">Bị trả lại</span>':''}</div>
+  <h3 style="margin:0;font-size:17px;text-wrap:balance">${esc(t.tenNhiemVu)}</h3>
+  <dl class="kv">${row('Văn bản giao',esc((t.soKyHieu||'Không số')+(t.ngayVanBan?' ngày '+fmtD(t.ngayVanBan):'')))}${row('Trích yếu',esc(t.tenVanBan))}
+  ${row('Loại nhiệm vụ',esc((LOAI_BY[t.loai]||LOAI_BY.khac).l))}${row('Phòng ban xử lý',esc(t.phongBan||NONE))}${row('Người xử lý',esc(t.nguoiXuLy))}
+  ${row('Lãnh đạo phụ trách',esc(t.lanhDao))}${row('Hạn xử lý',t.hanXuLy?fmtD(t.hanXuLy):'Không thời hạn')}
+  ${s.done?row('Ngày hoàn thành',fmtD(t.ngayHoanThanh)+(t.ngayDuyet?` · duyệt ngày ${fmtD(t.ngayDuyet)}`:'')):''}${row('Kết quả',esc(t.ketQua))}
+  ${rep&&rep.state==='cho_duyet'?row('Báo cáo chờ duyệt',`${esc(nameOf(rep.by,rep.nguoiBaoTen)||'Chuyên viên')} báo ngày ${fmtD(rep.ngayBao)}: ${esc(rep.ketQua)}`):''}
+  ${rep&&rep.state==='tra_lai'?row('Lý do trả lại',esc(rep.lyDoTraLai)):''}${row('Ghi chú',esc(t.ghiChu))}</dl>
+  ${(t.lichSu||[]).length?`<div><div class="small" style="font-weight:600;margin-bottom:6px">LỊCH SỬ XỬ LÝ</div><ul class="hist">${(t.lichSu||[]).slice().reverse().map(h=>`<li><time>${fmtDT(h.t)}</time><span>${esc(h.a)}${nameOf(h.by)?` · ${esc(nameOf(h.by))}`:''}</span></li>`).join('')}</ul></div>`:''}`;
+  const f=[];
+  if(S.role==='owner'){f.push(`<button class="btn danger" data-act="delete" data-id="${id}">Xóa</button>`,'<span class="sp"></span>');
+    if(s.done)f.push(`<button class="btn" data-act="reopen" data-id="${id}">Mở lại</button>`);
+    f.push(`<button class="btn" data-act="edit" data-id="${id}">Sửa</button>`);
+    if(!s.done)f.push(`<button class="btn ok" data-act="complete" data-id="${id}">${s.key==='pending'?'Duyệt':'Hoàn thành'}</button>`);}
+  else if(S.role==='staff'&&!s.done&&s.key!=='pending')f.push('<span class="sp"></span>',`<button class="btn primary" data-act="report" data-id="${id}">Báo hoàn thành</button>`);
+  else f.push('<span class="sp"></span><button class="btn" data-close>Đóng</button>');
+  $('#dtFoot').innerHTML=f.join('');
+  const d=$('#dlgDetail');if(!d.open)d.showModal();
+}
+['#dlgTask','#dlgDone','#dlgReport'].forEach(sel=>{const d=$(sel);const orig=d.showModal.bind(d);d.showModal=()=>{const dt=$('#dlgDetail');if(dt.open)dt.close();orig();};});
+
+/* ---------- Danh mục ---------- */
+function openCfg(){const c=S.cfg;$('#cf_dv').value=c.tenDonVi||'';$('#cf_pb').value=(c.phongBan||[]).join('\n');$('#cf_ld').value=(c.lanhDao||[]).join('\n');$('#cf_cv').value=(c.chuyenVien||[]).join('\n');$('#dlgCfg').showModal();}
+$('#cf_ok').addEventListener('click',async()=>{const lines=s=>uniqKeep(s.split('\n').map(x=>x.trim()).filter(Boolean));
+  const data={tenDonVi:$('#cf_dv').value.trim()||DEFAULT_CFG.tenDonVi,phongBan:lines($('#cf_pb').value),lanhDao:lines($('#cf_ld').value),chuyenVien:lines($('#cf_cv').value),updatedAt:nowIso()};
+  const btn=$('#cf_ok');busy(btn,true);try{await retry(()=>S.db.doc('config/app').set(data));toast('Đã lưu danh mục');$('#dlgCfg').close();}catch(e){toast(errMsg(e),'err');}finally{busy(btn,false);}});
+function uniqKeep(a){const s=new Set();return a.filter(x=>{const k=norm(x);if(s.has(k))return false;s.add(k);return true;});}
+
+async function clearSamples(){const ids=[...S.tasks.values()].filter(t=>t.mau).map(t=>t.id);if(!ids.length)return;
+  if(!await ask('Xóa dữ liệu mẫu?',`${ids.length} nhiệm vụ gắn nhãn MẪU sẽ bị xóa. Nhiệm vụ bạn đã nhập không bị ảnh hưởng.`,'Xóa dữ liệu mẫu'))return;
+  let n=0;try{for(const id of ids){await retry(()=>S.db.doc('tasks/'+id).delete());if(S.reports.has(id))await retry(()=>S.db.doc('reports/'+id).delete());n++;}toast(`Đã xóa ${n} nhiệm vụ mẫu`);}catch(e){toast(errMsg(e),'err');}}
+
+/* ---------- Nhập Excel ---------- */
+const HMAP=[
+  ['ngayHT',h=>h.includes('ngay hoan thanh')],
+  ['ngayVanBan',h=>h.includes('ngay van ban')||h.includes('ngay ban hanh')||h==='ngay vb'],
+  ['lanhDao',h=>h.includes('lanh dao')],
+  ['loai',h=>h.includes('loai')],
+  ['hanXuLy',h=>/(^|\s)han(\s|$)/.test(h)||h.includes('thoi han')],
+  ['soKyHieu',h=>h.includes('ky hieu')||h.includes('so van ban')||h.includes('so hieu')||h==='so vb'||h==='so'],
+  // "Văn bản giao nhiệm vụ", "Nội dung văn bản"… là trích yếu văn bản, không phải tên nhiệm vụ
+  ['tenVanBan',h=>h.includes('trich yeu')||h.includes('ten van ban')||(h.includes('van ban')&&!/(^|\s)(so|ngay)(\s|,|$)/.test(h))],
+  ['tenNhiemVu',h=>h.includes('nhiem vu')||h.includes('noi dung')||h.includes('cong viec')],
+  ['phongBan',h=>h.includes('phong ban')||h.includes('don vi')||h.includes('co quan')||h.startsWith('phong')],
+  ['nguoiXuLy',h=>h.includes('nguoi xu ly')||h.includes('chuyen vien')||h.includes('can bo')||h.includes('nguoi thuc hien')],
+  ['ghiChu',h=>h.includes('ghi chu')],
+  ['stt',h=>h==='stt'||h==='tt']];
+function findHeader(rows){
+  for(let i=0;i<Math.min(25,rows.length);i++){const map={};
+    (rows[i]||[]).forEach((c,j)=>{const h=norm(c);if(!h||h.length>60)return;for(const [k,fn] of HMAP){if(fn(h)){if(!(k in map))map[k]=j;break;}}});
+    if(map.tenNhiemVu!=null&&Object.keys(map).length>=3){const names={};for(const k in map)names[k]=String(rows[i][map[k]]).trim();return {i,map,names};}}
+  return null;
+}
+function parseDate(v){
+  if(v===''||v==null)return {v:''};
+  if(typeof v==='number'){const p=XLSX.SSF.parse_date_code(v);if(!p||!p.y)return {e:true};return {v:`${p.y}-${pad(p.m)}-${pad(p.d)}`};}
+  if(v instanceof Date&&!isNaN(v))return {v:isoDate(v)};
+  const s=String(v).trim();let m=s.match(/^(\d{1,2})[\/.\-](\d{1,2})[\/.\-](\d{4}|\d{2})$/);let y,mo,d;
+  if(m){d=+m[1];mo=+m[2];y=+m[3];if(y<100)y+=2000;}
+  else if((m=s.match(/^(\d{4})-(\d{1,2})-(\d{1,2})/))){y=+m[1];mo=+m[2];d=+m[3];}
+  else return {e:true};
+  const dt=new Date(y,mo-1,d);if(dt.getFullYear()!==y||dt.getMonth()!==mo-1||dt.getDate()!==d)return {e:true};
+  return {v:isoDate(dt)};
+}
+function loaiFrom(txt,han){const h=norm(txt);
+  if(!h)return han?'co_thoi_han':'khac';
+  if(h.includes('trong tam'))return 'trong_tam';if(h.includes('co thoi han')||h==='thoi han')return 'co_thoi_han';
+  if(h.includes('dinh ky'))return 'dinh_ky';if(h.includes('nam')||h.includes('ct')||h.includes('chuong trinh'))return 'ct_nam';return 'khac';}
+// Chỉ coi là trùng khi giống hệt: cùng số văn bản, tên nhiệm vụ, hạn xử lý, phòng ban và người xử lý
+const keyOf=x=>[x.soKyHieu,x.tenNhiemVu,x.hanXuLy,x.phongBan,x.nguoiXuLy].map(norm).join('|');
+let imRows=[],imMeta=null;
+const HLABEL={soKyHieu:'Số, ký hiệu',tenVanBan:'Trích yếu',ngayVanBan:'Ngày văn bản',tenNhiemVu:'Tên nhiệm vụ',loai:'Loại',phongBan:'Phòng ban',nguoiXuLy:'Người xử lý',lanhDao:'Lãnh đạo',hanXuLy:'Hạn xử lý',ngayHT:'Ngày hoàn thành',ghiChu:'Ghi chú'};
+function openImport(){imRows=[];imMeta=null;$('#imResult').innerHTML='';$('#imGo').disabled=true;$('#imGo').textContent='Nhập dữ liệu';$('#imFile').value='';$('#dlgImport').showModal();}
+$('#imTpl').addEventListener('click',downloadTemplate);
+$('#imFile').addEventListener('change',e=>{const f=e.target.files&&e.target.files[0];if(f)readFile(f);});
+const drop=$('#drop');
+['dragenter','dragover'].forEach(ev=>drop.addEventListener(ev,e=>{e.preventDefault();drop.classList.add('over');}));
+['dragleave','drop'].forEach(ev=>drop.addEventListener(ev,e=>{e.preventDefault();drop.classList.remove('over');}));
+drop.addEventListener('drop',e=>{const f=e.dataTransfer.files&&e.dataTransfer.files[0];if(f)readFile(f);});
+function readFile(file){
+  const out=$('#imResult');
+  if(typeof XLSX==='undefined'){out.innerHTML='<div class="ferr">Chưa tải được thư viện đọc Excel. Kiểm tra mạng rồi mở lại hộp thoại.</div>';return;}
+  const fr=new FileReader();
+  fr.onload=()=>{try{
+    const wb=XLSX.read(new Uint8Array(fr.result),{type:'array'});
+    let found=null,headerOnly=false;
+    for(const name of wb.SheetNames){const n=norm(name);if(/vi du|huong dan|danh muc/.test(n))continue;
+      const rows=XLSX.utils.sheet_to_json(wb.Sheets[name],{header:1,raw:true,defval:''});const h=findHeader(rows);if(!h)continue;
+      const parsed=parseRows(rows,h);if(parsed.length){found={name,parsed,names:h.names};break;}headerOnly=true;}
+    if(!found){out.innerHTML=`<div class="ferr">${headerOnly?'File có dòng tiêu đề nhưng chưa có nhiệm vụ nào. Hãy điền vào sheet “Nhiệm vụ”.':'Không tìm thấy dòng tiêu đề có cột “Tên nhiệm vụ”. Hãy dùng file mẫu hoặc thêm dòng tiêu đề.'}</div>`;$('#imGo').disabled=true;return;}
+    imRows=found.parsed;imMeta={fname:file.name,sheet:found.name,names:found.names,withDup:false};renderPreview();
+  }catch(err){out.innerHTML='<div class="ferr">Không đọc được file. Hãy lưu lại dưới dạng .xlsx rồi thử lại.</div>';}};
+  fr.readAsArrayBuffer(file);
+}
+function parseRows(rows,{i,map}){
+  const exist=new Set([...S.tasks.values()].map(keyOf));const seen=new Set();const out=[];
+  for(let r=i+1;r<rows.length;r++){const row=rows[r]||[];
+    const get=k=>map[k]!=null?row[map[k]]:'';
+    const keys=Object.keys(map).filter(k=>k!=='stt');
+    if(keys.every(k=>String(get(k)??'').trim()===''))continue;
+    const errs=[];const str=k=>String(get(k)??'').trim();
+    const nv=str('tenNhiemVu');if(!nv)errs.push('Thiếu tên nhiệm vụ');
+    const dv=parseDate(get('ngayVanBan')),dh=parseDate(get('hanXuLy')),dt=parseDate(get('ngayHT'));
+    if(dv.e)errs.push('Ngày văn bản sai');if(dh.e)errs.push('Hạn xử lý sai');if(dt.e)errs.push('Ngày hoàn thành sai');
+    const d={soKyHieu:str('soKyHieu'),tenVanBan:str('tenVanBan'),ngayVanBan:dv.v||'',tenNhiemVu:nv,loai:loaiFrom(str('loai'),dh.v),
+      phongBan:str('phongBan'),nguoiXuLy:str('nguoiXuLy'),lanhDao:str('lanhDao'),hanXuLy:dh.v||'',ngayHT:dt.v||'',ghiChu:str('ghiChu')};
+    if(d.ngayHT&&d.ngayHT>S.today)errs.push('Ngày hoàn thành ở tương lai');
+    let st='ok',dupWhy='';if(errs.length)st='err';else{const k=keyOf(d);if(exist.has(k)){st='dup';dupWhy='Đã có trên hệ thống';}else if(seen.has(k)){st='dup';dupWhy='Lặp lại dòng phía trên';}seen.add(k);}
+    out.push({line:r+1,d,st,errs,dupWhy});}
+  return out;
+}
+function renderPreview(){
+  const {fname,sheet,names,withDup}=imMeta;
+  const c={ok:0,dup:0,err:0,done:0};imRows.forEach(r=>c[r.st]++);
+  const go=c.ok+(withDup?c.dup:0);
+  const mapLine=Object.keys(HLABEL).map(k=>names[k]?`<span class="chip" title="Cột trong file: ${esc(names[k])}">${HLABEL[k]} ← “${esc(names[k])}”</span>`:'').join(' ');
+  const missing=['soKyHieu','tenNhiemVu','phongBan','nguoiXuLy','hanXuLy'].filter(k=>!names[k]).map(k=>HLABEL[k]);
+  $('#imResult').innerHTML=`<div class="sumline"><span class="small">File <b>${esc(fname)}</b>, sheet “${esc(sheet)}”:</span>
+    <span class="pill p-good">${c.ok} dòng hợp lệ</span>${c.dup?`<span class="pill p-warn">${c.dup} dòng trùng${withDup?' (vẫn nhập)':' (bỏ qua)'}</span>`:''}${c.err?`<span class="pill p-crit">${c.err} dòng lỗi (bỏ qua)</span>`:''}</div>
+    <div class="small" style="margin-top:8px;display:flex;flex-wrap:wrap;gap:4px;align-items:center"><b style="margin-right:4px">Cột đã nhận:</b>${mapLine}</div>
+    ${missing.length?`<div class="hint">Không thấy cột: ${missing.join(', ')}. Nếu file có cột này dưới tên khác, hãy đổi tiêu đề cột cho giống file mẫu.</div>`:''}
+    ${c.dup?`<label class="small" style="display:flex;gap:8px;align-items:center;margin-top:8px;cursor:pointer"><input type="checkbox" id="imWithDup" ${withDup?'checked':''}> Vẫn nhập ${c.dup} dòng bị đánh dấu trùng</label>`:''}
+    <div class="prev-box" style="margin-top:10px"><table class="prev"><thead><tr><th>Dòng</th><th>Kiểm tra</th><th>Số, ký hiệu</th><th>Ngày VB</th><th>Tên nhiệm vụ</th><th>Loại</th><th>Phòng ban</th><th>Người xử lý</th><th>Hạn</th><th>Ngày HT</th></tr></thead><tbody>
+    ${imRows.slice(0,300).map(r=>`<tr><td>${r.line}</td><td>${r.st==='ok'?'<span class="pill p-good">Hợp lệ</span>':r.st==='done'?'<span class="pill p-info">Đã nhập</span>':r.st==='dup'?`<span class="pill p-warn" title="${esc(r.dupWhy)}">Trùng · ${esc(r.dupWhy)}</span>`:`<span class="pill p-crit">${esc(r.errs.join('; '))}</span>`}</td>
+    <td>${esc(r.d.soKyHieu)}</td><td>${fmtD(r.d.ngayVanBan)}</td><td style="min-width:220px">${esc(r.d.tenNhiemVu)}</td><td>${esc(LOAI_BY[r.d.loai].s)}</td><td>${esc(r.d.phongBan)}</td><td>${esc(r.d.nguoiXuLy)}</td><td>${fmtD(r.d.hanXuLy)}</td><td>${fmtD(r.d.ngayHT)}</td></tr>`).join('')}
+    </tbody></table></div>${imRows.length>300?`<div class="hint">Đang xem 300 dòng đầu trong ${imRows.length} dòng.</div>`:''}
+    <div class="hint">Dòng chỉ bị coi là trùng khi giống hệt nhiệm vụ đã có (hoặc dòng phía trên) ở cả 5 cột: số văn bản, tên nhiệm vụ, hạn xử lý, phòng ban, người xử lý. Cùng một văn bản giao nhiều nhiệm vụ khác nhau thì không bị coi là trùng.</div>
+    <div id="imProg" hidden><div class="small" id="imProgT"></div><div class="progress"><i></i></div></div>`;
+  const cb=$('#imWithDup');if(cb)cb.addEventListener('change',()=>{imMeta.withDup=cb.checked;renderPreview();});
+  $('#imGo').disabled=!go;$('#imGo').textContent=go?`Nhập ${go} nhiệm vụ`:'Không có dòng hợp lệ';
+}
+$('#imGo').addEventListener('click',async()=>{
+  const ok=imRows.filter(r=>r.st==='ok'||(r.st==='dup'&&imMeta&&imMeta.withDup));if(!ok.length)return;const btn=$('#imGo');busy(btn,true);
+  const prog=$('#imProg');prog.hidden=false;const bar=prog.querySelector('i');let n=0;
+  try{for(const r of ok){const d=r.d;const done=!!d.ngayHT;const ts=nowIso();
+      const doc={soKyHieu:d.soKyHieu,tenVanBan:d.tenVanBan,ngayVanBan:d.ngayVanBan,tenNhiemVu:d.tenNhiemVu,loai:d.loai,phongBan:d.phongBan,nguoiXuLy:d.nguoiXuLy,lanhDao:d.lanhDao,hanXuLy:d.hanXuLy,ghiChu:d.ghiChu,
+        trangThai:done?'hoan_thanh':'dang_xu_ly',ngayHoanThanh:done?d.ngayHT:null,ngayDuyet:done?S.today:null,ketQua:'',nguon:'excel',createdAt:ts,createdBy:S.meId,
+        lichSu:[{t:ts,by:S.meId,a:'Nhập từ Excel'+(done?`, đã hoàn thành ngày ${fmtD(d.ngayHT)}`:'')}]};
+      const ref=S.db.collection('tasks').doc();await retry(()=>ref.set(doc));n++;r.st='done';
+      $('#imProgT').textContent=`Đã lưu ${n}/${ok.length}`;bar.style.width=pct(n,ok.length)+'%';}
+    toast(`Đã nhập ${n} nhiệm vụ`);$('#dlgImport').close();
+  }catch(e){toast(`Đã nhập ${n}/${ok.length} nhiệm vụ. ${errMsg(e)}`,'err');$('#imGo').textContent='Nhập tiếp các dòng còn lại';busy(btn,false);return;}
+  busy(btn,false);
+});
+
+/* ---------- Tải file ---------- */
+async function saveFile(filename,data,okMsg){
+  if(!S.dl){toast('Chế độ xem này không cho tải file.','err');return;}
+  try{await S.dl.save({filename,data});toast(okMsg);}catch(e){if(e&&e.code==='declined')return;toast(e&&e.code==='rate_limited'?'Đang có một yêu cầu tải khác, thử lại sau giây lát.':'Không tải được file.','err');}
+}
+async function downloadTemplate(){
+  let bytes;
+  try{const b64=$('#tplB64').textContent.replace(/\s+/g,'');const bin=atob(b64);bytes=new Uint8Array(bin.length);for(let i=0;i<bin.length;i++)bytes[i]=bin.charCodeAt(i);}
+  catch(e){toast('Không đọc được file mẫu trong trang.','err');return;}
+  await saveFile('Mau-nhap-nhiem-vu.xlsx',new Blob([bytes]),'Đã tải file Excel mẫu');
+}
+function exportExcel(){
+  if(typeof XLSX==='undefined'){toast('Chưa tải được thư viện Excel.','err');return;}
+  // Xuất toàn bộ nhiệm vụ của kỳ báo cáo đang chọn (không theo thẻ tình trạng / ô tìm kiếm), xếp theo thời gian
+  const items=scoped();
+  const L=items.slice().sort((x,y)=>dateOf(x.t).localeCompare(dateOf(y.t))||(x.t.soKyHieu||'').localeCompare(y.t.soKyHieu||'')||(x.t.hanXuLy||'9999').localeCompare(y.t.hanXuLy||'9999')||(x.t.createdAt||'').localeCompare(y.t.createdAt||''));
+  const conLai=s=>s.done||s.days==null?'':s.days>0?`Còn ${s.days} ngày`:s.days===0?'Hạn hôm nay':`Trễ ${-s.days} ngày`;
+  const head=['STT','Số, ký hiệu văn bản','Trích yếu văn bản','Ngày văn bản','Tên nhiệm vụ','Loại nhiệm vụ','Phòng ban xử lý','Người xử lý','Lãnh đạo phụ trách','Hạn xử lý','Còn lại / trễ','Tình trạng','Ngày hoàn thành','Kết quả','Ghi chú'];
+  const f=S.f,sc=[f.loai&&(LOAI_BY[f.loai]||{}).l,f.phong,f.nguoi,f.lanhdao].filter(Boolean);
+  const title=[`DANH SÁCH NHIỆM VỤ – ${(S.cfg.tenDonVi||DEFAULT_CFG.tenDonVi).toUpperCase()}`];
+  const sub=[`Kỳ báo cáo: ${kyLabel()}${sc.length?' · Lọc: '+sc.join(' · '):''} · Tổng ${L.length} nhiệm vụ · Xuất ngày ${fmtD(S.today)}`];
+  const aoa=[title,sub,[],head,...L.map(({t,s},i)=>[i+1,t.soKyHieu||'',t.tenVanBan||'',fmtD(t.ngayVanBan),t.tenNhiemVu,(LOAI_BY[t.loai]||LOAI_BY.khac).l,t.phongBan||'',t.nguoiXuLy||'',t.lanhDao||'',fmtD(t.hanXuLy),conLai(s),ST[s.key].l,s.done?fmtD(t.ngayHoanThanh):(s.key==='pending'?'Báo '+fmtD(s.rep.ngayBao):''),t.ketQua||'',t.ghiChu||''])];
+  const wb=XLSX.utils.book_new();const ws=XLSX.utils.aoa_to_sheet(aoa);ws['!cols']=[6,18,40,12,50,20,30,20,30,12,14,20,14,40,24].map(w=>({wch:w}));
+  ws['!merges']=[{s:{r:0,c:0},e:{r:0,c:head.length-1}},{s:{r:1,c:0},e:{r:1,c:head.length-1}}];
+  ws['!autofilter']={ref:XLSX.utils.encode_range({s:{r:3,c:0},e:{r:3+L.length,c:head.length-1}})};
+  XLSX.utils.book_append_sheet(wb,ws,'Nhiệm vụ');
+  const grp=(key,label)=>{const g=new Map();for(const it of items){const k=it.t[key]||NONE;if(!g.has(k))g.set(k,[]);g.get(k).push(it);}
+    const rows=[...g.entries()].map(([k,a])=>[k,agg(a)]).sort((x,y)=>y[1].total-x[1].total);
+    const s=XLSX.utils.aoa_to_sheet([['STT',label,'Tổng','HT đúng hạn','HT quá hạn','Tỷ lệ HT (%)','Chưa HT trong hạn','Chưa HT quá hạn','Tỷ lệ CHT (%)'],...rows.map(([k,a],i)=>[i+1,k,a.total,a.doneOn,a.doneLate,pct(a.done,a.total),a.openIn,a.openLate,pct(a.open,a.total)])]);
+    s['!cols']=[6,36,8,12,12,12,16,16,13].map(w=>({wch:w}));return s;};
+  XLSX.utils.book_append_sheet(wb,grp('phongBan','Phòng ban'),'Theo phòng ban');
+  XLSX.utils.book_append_sheet(wb,grp('nguoiXuLy','Người xử lý'),'Theo người xử lý');
+  const buf=XLSX.write(wb,{bookType:'xlsx',type:'array'});
+  saveFile(`Giam-sat-nhiem-vu_${S.today}.xlsx`,new Blob([buf]),`Đã xuất ${L.length} nhiệm vụ ra Excel`);
+}
+
+/* ---------- Trình chiếu: toàn màn hình, tự cuộn từ dưới lên và lặp lại ---------- */
+const SPEEDS=[20,35,50,75,110]; // điểm ảnh mỗi giây
+const K={on:false,paused:false,speedI:1,until:0,pos:0,loopH:0,raf:0,last:0,idleT:0,manualUntil:0,wasFs:false};
+try{const v=parseInt(localStorage.getItem('gsnv_spd'),10);if(v>=0&&v<SPEEDS.length)K.speedI=v;}catch(e){}
+const THU=['Chủ nhật','Thứ Hai','Thứ Ba','Thứ Tư','Thứ Năm','Thứ Sáu','Thứ Bảy'];
+function setTodayLbl(){const d=new Date();$('#todayLbl').textContent=`Hôm nay ${pad(d.getDate())}/${pad(d.getMonth()+1)}/${d.getFullYear()}`;}
+function kUpdateBar(){$('#kPause').textContent=K.paused?'Tiếp tục':'Tạm dừng';$('#kSpd').textContent=`Tốc độ ${K.speedI+1}/${SPEEDS.length}`;$('#kSlow').disabled=K.speedI===0;$('#kFast').disabled=K.speedI===SPEEDS.length-1;}
+function kWake(){if(!K.on)return;document.body.classList.remove('idle');$('#kbar').classList.remove('idle');clearTimeout(K.idleT);
+  K.idleT=setTimeout(()=>{if(!K.on)return;document.body.classList.add('idle');$('#kbar').classList.add('idle');},3000);}
+function kioskStart(){
+  if(K.on)return;K.on=true;K.wasFs=false;
+  document.documentElement.classList.add('kiosk');document.body.classList.add('kiosk');
+  $('#kioskPanel').hidden=false;$('#kbar').hidden=false;$('#kprog').hidden=false;
+  const el=document.documentElement;
+  try{const p=el.requestFullscreen&&el.requestFullscreen();if(p&&p.catch)p.catch(()=>{});}catch(e){}
+  window.scrollTo(0,0);K.loopH=0;K.pos=0;$('#kScroll')._sig=null;
+  renderAll();
+  K.until=0;K.last=0;K.paused=false;K.manualUntil=0;
+  kUpdateBar();kWake();kLock();cancelAnimationFrame(K.raf);K.raf=requestAnimationFrame(kTick);
+}
+/* Giữ màn hình luôn sáng khi trình chiếu (nếu trình duyệt cho phép) */
+async function kLock(){if(!K.on||K.lock||!navigator.wakeLock||document.visibilityState!=='visible')return;
+  try{K.lock=await navigator.wakeLock.request('screen');K.lock.addEventListener('release',()=>{K.lock=null;});}catch(e){K.lock=null;}}
+function kUnlock(){if(K.lock){try{K.lock.release();}catch(e){}K.lock=null;}}
+document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='visible'){K.last=0;kLock();}});
+function kioskStop(){
+  if(!K.on)return;K.on=false;cancelAnimationFrame(K.raf);clearTimeout(K.idleT);kUnlock();
+  document.documentElement.classList.remove('kiosk');document.body.classList.remove('kiosk','idle');
+  $('#kioskPanel').hidden=true;$('#kScroll').innerHTML='';$('#kScroll')._sig=null;K.loopH=0;
+  $('#kbar').hidden=true;$('#kbar').classList.remove('idle');$('#kprog').hidden=true;
+  if(document.fullscreenElement&&document.exitFullscreen){try{const p=document.exitFullscreen();if(p&&p.catch)p.catch(()=>{});}catch(e){}}
+  renderAll();
+}
+function kTick(now){
+  if(!K.on)return;K.raf=requestAnimationFrame(kTick);kStep(now);
+}
+// Dự phòng: nếu trình duyệt hãm requestAnimationFrame (máy chậm, cửa sổ không được chọn) thì đồng hồ vẫn đẩy cuộn tiếp
+setInterval(()=>{if(K.on){const now=performance.now();if(now-K.last>150)kStep(now);}},100);
+function kStep(now){
+  const dt=K.last?Math.min(5000,Math.max(0,now-K.last)):0;K.last=now; // bám theo thời gian thực kể cả khi máy chậm khung hình
+  const box=$('#kScroll'),L=K.loopH;
+  $('#kprog').style.width=(L?Math.min(100,(box.scrollTop%L)/L*100):100)+'%';
+  if(!L)return;
+  // Chỉ dừng khi người xem bấm Tạm dừng; cuộn chuột / phím mũi tên chỉ dịch vị trí rồi chạy tiếp ngay
+  if(K.paused)return;
+  K.pos+=SPEEDS[K.speedI]*dt/1000;if(K.pos>=L)K.pos%=L;box.scrollTop=K.pos;
+}
+function kNudge(d){const L=K.loopH;if(!K.on||!L)return;K.pos=((K.pos+d)%L+L)%L;$('#kScroll').scrollTop=K.pos;kWake();}
+if(window.ResizeObserver)new ResizeObserver(()=>{if(K.on)renderKiosk(scoped(),true);}).observe($('#kScroll'));
+$('#kPause').addEventListener('click',()=>{K.paused=!K.paused;kUpdateBar();});
+$('#kSlow').addEventListener('click',()=>{K.speedI=Math.max(0,K.speedI-1);try{localStorage.setItem('gsnv_spd',K.speedI)}catch(e){}kUpdateBar();});
+$('#kFast').addEventListener('click',()=>{K.speedI=Math.min(SPEEDS.length-1,K.speedI+1);try{localStorage.setItem('gsnv_spd',K.speedI)}catch(e){}kUpdateBar();});
+$('#kExit').addEventListener('click',kioskStop);
+document.addEventListener('fullscreenchange',()=>{const fs=!!document.fullscreenElement;if(!fs&&K.on&&K.wasFs)kioskStop();K.wasFs=fs;});
+document.addEventListener('mousemove',kWake);
+document.addEventListener('touchstart',kWake,{passive:true});
+window.addEventListener('wheel',e=>{if(K.on)kNudge(e.deltaY);},{passive:true});
+document.addEventListener('keydown',e=>{
+  if(!K.on||document.querySelector('dialog[open]'))return;
+  if(e.key===' '){e.preventDefault();$('#kPause').click();kWake();}
+  else if(e.key==='Escape')kioskStop();
+  else if(e.key==='+'||e.key==='=')$('#kFast').click();
+  else if(e.key==='-')$('#kSlow').click();
+  else if(e.key==='ArrowDown')kNudge(60);
+  else if(e.key==='ArrowUp')kNudge(-60);
+  else if(e.key==='PageDown')kNudge($('#kScroll').clientHeight*.8);
+  else if(e.key==='PageUp')kNudge(-$('#kScroll').clientHeight*.8);
+});
+setInterval(()=>{if(K.on)setTodayLbl();},15000);
+
+/* ---------- Kết nối dữ liệu ---------- */
+function refreshNames(){if(!S.user)return;const ids=new Set();
+  for(const r of S.reports.values())if(r.by)ids.add(r.by);
+  for(const t of S.tasks.values()){if(t.nguoiBao)ids.add(t.nguoiBao);(t.lichSu||[]).forEach(h=>{if(h.by)ids.add(h.by);});}
+  if(!ids.size)return;S.user.profiles([...ids]).then(ps=>{S.names=ps||{};scheduleRender();}).catch(()=>{});}
+async function boot(){
+  S.today=today();renderAll();
+  const C=window.claude;
+  if(!C||typeof C.use!=='function'){setConn('off','Chưa kết nối dữ liệu');S.err=window.__fbErr||'Không tải được thư viện Firebase. Kiểm tra kết nối mạng rồi tải lại trang.';S.loaded=true;renderAll();return;}
+  let db=null,user=null,dl=null;
+  try{[db,user,dl]=await Promise.all([C.use('db'),C.use('user'),C.use('downloads')]);}catch(e){}
+  S.user=user;S.dl=dl;
+  if(user){try{const me=await user.me();S.meId=me.id;S.isOwner=!!me.isOwner;S.canWrite=await user.can('data.write');}catch(e){}}
+  S.role=S.isOwner?'owner':(S.meId&&S.canWrite!==false?'staff':'viewer');
+  if(!db){setConn('off','Không đọc được dữ liệu');S.err='Không mở được kho dữ liệu. Tải lại trang để thử lại.';S.loaded=true;renderAll();return;}
+  S.db=db;
+  const timer=setTimeout(()=>{if(!S.confirmed)setConn('warn',S.loaded?'Mất kết nối, dữ liệu có thể chưa mới nhất':'Chưa kết nối được máy chủ dữ liệu, đang thử lại…');},10000);
+  const got={tasks:false,reports:false};
+  const onMeta=(which,meta)=>{got[which]=true;if(got.tasks&&got.reports)S.loaded=true;
+    if(!meta.fromCache){S.lastSync=new Date();if(got.tasks&&got.reports){S.confirmed=true;clearTimeout(timer);}connText();}
+    scheduleRender();refreshNames();};
+  const onErr=e=>{clearTimeout(timer);S.loaded=true;setConn('off',e&&e.code==='permission-denied'?'Chưa có quyền xem dữ liệu':'Mất kết nối dữ liệu');S.err=e&&e.code==='permission-denied'?(S.meId?'Gmail này chưa được cấp quyền xem dữ liệu. Hãy nhờ người quản trị thêm Gmail của bạn, hoặc bấm Đăng xuất để đổi tài khoản.':'Bấm “Đăng nhập Google” ở đầu trang để xem dữ liệu.'):e&&e.code==='revoked'?'Quyền xem dữ liệu đã thay đổi. Tải lại trang để tiếp tục.':'Kết nối dữ liệu bị gián đoạn. Tải lại trang để kết nối lại.';scheduleRender();};
+  db.collection('tasks').onSnapshot(snap=>{S.tasks=new Map(snap.docs.map(d=>[d.id,{...d.data(),id:d.id}]));onMeta('tasks',snap.metadata);},onErr);
+  db.collection('reports').onSnapshot(snap=>{S.reports=new Map(snap.docs.map(d=>[d.id,d.data()]));onMeta('reports',snap.metadata);},onErr);
+  db.doc('config/app').onSnapshot(snap=>{S.cfg={...DEFAULT_CFG,...(snap.exists?snap.data():{})};scheduleRender();},()=>{});
+}
+setInterval(()=>{if(today()!==S.today)renderAll();},60000);
+boot();
+})();
+</script>
+
+</body>
+</html>

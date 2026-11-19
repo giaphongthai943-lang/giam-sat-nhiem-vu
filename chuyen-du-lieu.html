@@ -1,0 +1,102 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Chuyển dữ liệu sang Firebase</title>
+<style>
+  :root{--bg:#eef1f6;--surface:#fff;--ink:#14213a;--ink-2:#46536a;--line:#dfe4ec;--accent:#1d5fc4;--good:#0b6b2b;--crit:#b42424}
+  @media (prefers-color-scheme:dark){:root{--bg:#0e131b;--surface:#161d28;--ink:#e8edf5;--ink-2:#b5c0d1;--line:#273141;--accent:#4d8fe8;--good:#4cc76a;--crit:#f07f7f}}
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.55 system-ui,-apple-system,"Segoe UI",sans-serif;padding:24px 16px}
+  .card{max-width:640px;margin:0 auto;background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:22px}
+  h1{font-size:20px;margin:0 0 6px}
+  p,li{color:var(--ink-2)}
+  ol{padding-left:20px}
+  button{font:inherit;font-weight:600;border-radius:8px;border:1px solid var(--line);background:var(--surface);color:var(--ink);padding:9px 16px;cursor:pointer}
+  button.primary{background:var(--accent);border-color:var(--accent);color:#fff}
+  button[disabled]{opacity:.5;cursor:default}
+  .row{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin:14px 0}
+  .msg{margin-top:14px;padding:10px 12px;border-radius:8px;border:1px solid var(--line);white-space:pre-wrap}
+  .ok{color:var(--good)} .err{color:var(--crit)}
+</style>
+</head>
+<body>
+<div class="card">
+  <h1>Chuyển dữ liệu sang Firebase</h1>
+  <p>Dùng một lần, sau khi đã tạo dự án Firebase và dán luật bảo mật. Chỉ Gmail quản trị làm được.</p>
+  <ol>
+    <li>Bấm <b>Đăng nhập Google</b> bằng Gmail quản trị.</li>
+    <li>Chọn file <b>du-lieu-chuyen-sang.json</b>.</li>
+    <li>Bấm <b>Chuyển dữ liệu</b>, đợi báo xong rồi mở trang chính.</li>
+  </ol>
+  <div class="row"><button id="btnIn">Đăng nhập Google</button><span id="who"></span></div>
+  <div class="row"><input type="file" id="file" accept=".json,application/json" disabled></div>
+  <div class="row"><button class="primary" id="btnGo" disabled>Chuyển dữ liệu</button><a href="./" id="home" hidden>Mở trang Giám sát nhiệm vụ →</a></div>
+  <div class="msg" id="msg">Chưa đăng nhập.</div>
+</div>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+<script src="firebase-config.js"></script>
+<script>
+(function(){
+  var $=function(id){return document.getElementById(id)};
+  function say(t,cls){var m=$('msg');m.textContent=t;m.className='msg '+(cls||'');}
+  var C=window.FIREBASE_CONFIG;
+  if(!window.firebase){say('Không tải được thư viện Firebase. Kiểm tra mạng.','err');return;}
+  if(!C||!C.apiKey||/^DIEN_/.test(C.apiKey)){say('Chưa cấu hình Firebase: hãy điền file firebase-config.js trước.','err');return;}
+  firebase.initializeApp(C);
+  var auth=firebase.auth(),db=firebase.firestore(),data=null;
+  try{db.settings({ignoreUndefinedProperties:true,merge:true});}catch(e){}
+
+  $('btnIn').onclick=function(){
+    var p=new firebase.auth.GoogleAuthProvider();p.setCustomParameters({prompt:'select_account'});
+    auth.signInWithPopup(p).catch(function(e){if(e&&e.code==='auth/popup-blocked')auth.signInWithRedirect(p);else say('Không đăng nhập được: '+(e.message||e.code),'err');});
+  };
+  auth.onAuthStateChanged(function(u){
+    if(!u){$('who').textContent='';return;}
+    $('who').textContent=u.email;$('btnIn').textContent='Đổi tài khoản';
+    db.doc('quanTri/kiemTra').get().then(function(){
+      $('file').disabled=false;say('Đã đăng nhập quản trị. Hãy chọn file du-lieu-chuyen-sang.json.','ok');
+    },function(){
+      $('file').disabled=true;say('Gmail '+u.email+' không phải quản trị. Kiểm tra lại Gmail trong luật Firestore (firestore.rules) và đã bấm Publish chưa.','err');
+    });
+  });
+
+  $('file').onchange=function(e){
+    var f=e.target.files[0];if(!f)return;
+    var r=new FileReader();
+    r.onload=function(){
+      try{data=JSON.parse(r.result);}catch(x){data=null;say('File không đúng định dạng JSON.','err');return;}
+      var nt=Object.keys(data.tasks||{}).length,nr=Object.keys(data.reports||{}).length,nc=Object.keys(data.config||{}).length;
+      if(!nt&&!nc){say('File không có dữ liệu nhiệm vụ.','err');return;}
+      say('Sẵn sàng chuyển: '+nt+' nhiệm vụ, '+nr+' báo cáo chờ duyệt, '+nc+' danh mục.\nNhiệm vụ trùng mã sẽ được ghi đè, không bị nhân đôi.');
+      $('btnGo').disabled=false;
+    };
+    r.readAsText(f,'utf-8');
+  };
+
+  $('btnGo').onclick=function(){
+    if(!data)return;
+    var ops=[];
+    Object.keys(data.tasks||{}).forEach(function(id){ops.push(['tasks/'+id,data.tasks[id]]);});
+    Object.keys(data.reports||{}).forEach(function(id){ops.push(['reports/'+id,data.reports[id]]);});
+    if(data.config&&data.config.app)ops.push(['config/app',data.config.app]);
+    $('btnGo').disabled=true;
+    var done=0,chunks=[];for(var i=0;i<ops.length;i+=400)chunks.push(ops.slice(i,i+400));
+    chunks.reduce(function(p,ch){return p.then(function(){
+      var b=db.batch();ch.forEach(function(o){b.set(db.doc(o[0]),o[1]);});
+      return b.commit().then(function(){done+=ch.length;say('Đang chuyển… '+done+'/'+ops.length);});
+    });},Promise.resolve()).then(function(){
+      return db.doc('config/congKhai').get().then(function(d){if(!d.exists)return db.doc('config/congKhai').set({xemCongKhai:false});});
+    }).then(function(){
+      say('Xong: đã chuyển '+ops.length+' mục sang Firebase.\nMở trang chính để kiểm tra. Có thể xóa file JSON khỏi máy nếu không cần nữa.','ok');$('home').hidden=false;
+    },function(e){
+      say('Lỗi sau khi chuyển '+done+'/'+ops.length+' mục: '+((e&&e.code)||e)+'\nBấm Chuyển dữ liệu lần nữa để thử lại (không bị nhân đôi).','err');$('btnGo').disabled=false;
+    });
+  };
+})();
+</script>
+</body>
+</html>
