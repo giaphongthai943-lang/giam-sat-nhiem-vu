@@ -423,6 +423,65 @@ body.kiosk.idle,body.kiosk.idle *{cursor:none}
 .kbar .spd{font-size:12px;color:var(--ink-2);min-width:74px;text-align:center;font-variant-numeric:tabular-nums}
 .kprog{position:fixed;left:0;top:env(safe-area-inset-top,0px);height:3px;background:var(--accent);z-index:50;width:0}
 @media (max-width:640px){.kpi .big{font-size:30px}.panel-h{padding:12px}.toolbar{padding:10px 12px}}
+
+/* Bảng thống kê gọn: tiêu đề cột được xuống dòng, đệm hẹp hơn để vừa khung ở màn hình laptop 1366px */
+@media (max-width:1240px){.grid2{grid-template-columns:minmax(0,1fr)}}
+.stat th{white-space:normal;padding:7px 5px;line-height:1.25}
+.stat td{padding:8px 5px}
+.stat td.l{min-width:130px}
+.stat .rate{min-width:40px;padding:2px 4px}
+
+/* Điện thoại: số liệu gọn hai cột, danh sách nhiệm vụ đưa lên ngay sau số liệu và hiện dạng thẻ */
+@media (max-width:640px){
+  .kpis{grid-template-columns:repeat(2,minmax(0,1fr));grid-auto-flow:dense;gap:10px}
+  .kpi.all,.kpi.open{grid-column:1/-1}
+  .kpi{padding:10px 12px;gap:4px}
+  .kpi .big{font-size:26px}
+  .kpi .ico{width:22px;height:22px}
+  .kpi .lbl{font-size:11px}
+  .subs{grid-template-columns:repeat(auto-fit,minmax(56px,1fr))}
+  .sub b{font-size:16px}.sub span{font-size:11px}
+  .kpi.doc .note{display:none}
+  #listPanel{order:1}
+  .wrap>.grid2{order:2}
+  #listPanel .hl-legend{display:none}
+  #tList .tasks thead{display:none}
+  #tList .tasks,#tList .tasks tbody{display:block}
+  #tList .tasks tr{display:grid;grid-template-columns:minmax(0,1fr) auto;grid-template-areas:"nv nv" "vb vb" "pb ld" "han st" "act act";gap:6px 10px;padding:12px 14px;border-bottom:1px solid var(--line)}
+  #tList .tasks td{display:block;padding:0;border:none;background:none!important;box-shadow:none!important;min-width:0;max-width:none}
+  #tList .tasks td.num{display:none}
+  #tList .tasks td:nth-child(2){grid-area:vb;display:flex;flex-wrap:wrap;align-items:baseline;gap:0 8px}
+  #tList .tasks td:nth-child(2) .vb-ty{flex-basis:100%;-webkit-line-clamp:1}
+  #tList .tasks td:nth-child(3){grid-area:nv}
+  #tList .tasks td:nth-child(3) .link{font-size:14px;line-height:1.4}
+  #tList .tasks td:nth-child(4){grid-area:pb;font-size:12.5px}
+  #tList .tasks td:nth-child(5){grid-area:ld;text-align:right}
+  #tList .tasks td.c-han{grid-area:han;display:flex;flex-wrap:wrap;align-items:baseline;gap:0 6px;font-size:12.5px}
+  #tList .tasks td.c-han::before{content:"Hạn";color:var(--muted)}
+  #tList .tasks td:nth-child(7){grid-area:st;justify-self:end;align-self:center}
+  #tList .tasks td.c-act{grid-area:act;text-align:right}
+  #tList .tasks tr.hl-y{background:var(--hl-y);box-shadow:inset 4px 0 0 var(--hl-y-bar)}
+  #tList .tasks tr.hl-o{background:var(--hl-o);box-shadow:inset 4px 0 0 var(--hl-o-bar)}
+  #tList .tasks tr.hl-r{background:var(--hl-r);box-shadow:inset 4px 0 0 var(--hl-r-bar)}
+}
+
+/* Trình chiếu: phần đầu gọn để thấy nhiều nhiệm vụ hơn; ẩn nút đăng nhập, vai trò, dòng thiết kế; nội dung dài cắt còn 3 dòng */
+body.kiosk #authChip,body.kiosk #role,body.kiosk .hero>.credit{display:none!important}
+body.kiosk .hero{padding-top:12px;padding-bottom:12px}
+body.kiosk .logo{width:60px;height:60px}
+body.kiosk h1{font-size:clamp(20px,1.9vw,27px)}
+body.kiosk .meta{margin-top:6px}
+.kscroll .c-nv .link{display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}
+.kscroll .vb-ty{-webkit-line-clamp:2}
+@media (max-height:820px){
+  body.kiosk .wrap{gap:10px;padding-block:10px}
+  body.kiosk .kpi{padding:8px 14px;gap:2px}
+  body.kiosk .kpi .note,body.kiosk .kpi .ico{display:none}
+  body.kiosk .kpi .big{font-size:30px}
+  body.kiosk .kpi .sub b{font-size:18px}
+  body.kiosk .kpi .sub span{font-size:11.5px}
+  body.kiosk .hero .fest-bar{display:none}
+}
 </style>
 
 <div class="wrap">
@@ -446,7 +505,7 @@ body.kiosk.idle,body.kiosk.idle *{cursor:none}
       </div>
     </div>
     <div class="actions" id="topActions"></div>
-    <div class="credit">Design by giaphongthai (Demo version 1)</div>
+    <div class="credit">Design by giaphongthai · Phiên bản 1.0</div>
   </header>
 <script>
 /* Giao diện theo dịp lễ: dải chào mừng + tranh góc phải + cánh hoa rơi trong khung tiêu đề.
@@ -1304,7 +1363,10 @@ function renderFilters(){
 function renderKySelect(all){
   const cur=S.today,cy=cur.slice(0,4),cm=cur.slice(0,7),qOf=d=>`${d.slice(0,4)}-${Math.ceil(+d.slice(5,7)/3)}`;
   const ds=all.map(dateOf).filter(Boolean),v=S.f.ky;
-  const ys=new Set([cy,String(+cy-1),...ds.map(d=>d.slice(0,4))]),qs=new Set([qOf(cur),...ds.map(qOf)]),ms=new Set([cm,...ds.map(d=>d.slice(0,7))]);
+  // Năm: năm nay và các năm có dữ liệu; quý, tháng: đủ từ đầu năm nay đến hiện tại (không nhảy cóc) cộng các kỳ có dữ liệu
+  const curQ=Math.ceil(+cur.slice(5,7)/3),curM=+cur.slice(5,7);
+  const ys=new Set([cy,...ds.map(d=>d.slice(0,4))]),qs=new Set([...ds.map(qOf)]),ms=new Set([...ds.map(d=>d.slice(0,7))]);
+  for(let q=1;q<=curQ;q++)qs.add(`${cy}-${q}`);for(let m=1;m<=curM;m++)ms.add(`${cy}-${pad(m)}`);
   if(v[0]==='y')ys.add(v.slice(2));if(v[0]==='q')qs.add(v.slice(2));if(v[0]==='m')ms.add(v.slice(2));
   const desc=s=>[...s].sort().reverse();
   const opt=(val,l)=>`<option value="${val}"${val===v?' selected':''}>${esc(l)}</option>`;
